@@ -1,0 +1,95 @@
+<html>
+<head>
+<title>SimpleHTTPPOSTRequesterLB.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+.s4 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+SimpleHTTPPOSTRequesterLB.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">pack.androidmap; 
+ 
+</span><span class="s0">import </span><span class="s1">android.content.Context; 
+ 
+</span><span class="s0">import </span><span class="s1">org.apache.http.HttpResponse; 
+</span><span class="s0">import </span><span class="s1">org.apache.http.client.HttpClient; 
+</span><span class="s0">import </span><span class="s1">org.apache.http.client.methods.HttpPost; 
+</span><span class="s0">import </span><span class="s1">org.apache.http.entity.StringEntity; 
+</span><span class="s0">import </span><span class="s1">org.apache.http.impl.client.DefaultHttpClient; 
+</span><span class="s0">import </span><span class="s1">org.json.JSONArray; 
+</span><span class="s0">import </span><span class="s1">org.json.JSONException; 
+</span><span class="s0">import </span><span class="s1">org.json.JSONTokener; 
+ 
+</span><span class="s0">import </span><span class="s1">java.io.BufferedReader; 
+</span><span class="s0">import </span><span class="s1">java.io.IOException; 
+</span><span class="s0">import </span><span class="s1">java.io.InputStreamReader; 
+ 
+</span><span class="s2">/** 
+ * Created by Lefteris on 6/12/2014. 
+ */</span><span class="s1"> 
+</span><span class="s0">public class </span><span class="s1">SimpleHTTPPOSTRequesterLB { 
+ 
+    </span><span class="s0">private </span><span class="s1">String apiusername; 
+    </span><span class="s0">private </span><span class="s1">String apipassword; 
+    </span><span class="s0">private </span><span class="s1">String apiURL; 
+    </span><span class="s0">private </span><span class="s1">String table_name; 
+    </span><span class="s0">public </span><span class="s1">JSONArray finalResult; 
+    </span><span class="s0">public </span><span class="s1">Context context; 
+    </span><span class="s0">private </span><span class="s1">DbAndroidMap db; 
+ 
+    </span><span class="s0">public </span><span class="s1">SimpleHTTPPOSTRequesterLB(String apiusername, String apipassword, String apiURL, String table_name) { 
+        </span><span class="s0">this</span><span class="s1">.apiURL = apiURL; 
+        </span><span class="s0">this</span><span class="s1">.apiusername = apiusername; 
+        </span><span class="s0">this</span><span class="s1">.apipassword = apipassword; 
+        </span><span class="s0">this</span><span class="s1">.table_name = table_name; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">makeHTTPPOSTRequest(Context context) { 
+        </span><span class="s0">try </span><span class="s1">{ 
+            HttpClient c = </span><span class="s0">new </span><span class="s1">DefaultHttpClient(); 
+            HttpPost p = </span><span class="s0">new </span><span class="s1">HttpPost(</span><span class="s0">this</span><span class="s1">.apiURL); 
+            p.setEntity(</span><span class="s0">new </span><span class="s1">StringEntity(</span><span class="s3">&quot;{</span><span class="s0">\&quot;</span><span class="s3">username</span><span class="s0">\&quot;</span><span class="s3">:</span><span class="s0">\&quot;</span><span class="s3">&quot; </span><span class="s1">+ </span><span class="s0">this</span><span class="s1">.apiusername + </span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">,</span><span class="s0">\&quot;</span><span class="s3">password</span><span class="s0">\&quot;</span><span class="s3">:</span><span class="s0">\&quot;</span><span class="s3">&quot; </span><span class="s1">+ </span><span class="s0">this</span><span class="s1">.apipassword + </span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">}&quot;</span><span class="s1">));</span><span class="s2">//,ContentType.create(&quot;application/json&quot;)));</span><span class="s1"> 
+            HttpResponse r = c.execute(p); 
+            BufferedReader rd = </span><span class="s0">new </span><span class="s1">BufferedReader(</span><span class="s0">new </span><span class="s1">InputStreamReader(r.getEntity().getContent(), </span><span class="s3">&quot;UTF-8&quot;</span><span class="s1">)); 
+            String line = rd.readLine(); 
+            JSONTokener token = </span><span class="s0">new </span><span class="s1">JSONTokener(line); 
+            </span><span class="s0">try</span><span class="s1">{ 
+                finalResult = </span><span class="s0">new </span><span class="s1">JSONArray(token); 
+            }</span><span class="s0">catch</span><span class="s1">(JSONException e){e.printStackTrace();} 
+ 
+            </span><span class="s0">try</span><span class="s1">{ 
+                org.json.JSONObject jsonO; 
+                db = </span><span class="s0">new </span><span class="s1">DbAndroidMap(context); 
+                DatabaseManager lol =</span><span class="s0">new </span><span class="s1">DatabaseManager(); 
+                lol.initializeInstance(db); 
+                </span><span class="s0">if</span><span class="s1">(table_name == </span><span class="s3">&quot;livebus&quot;</span><span class="s1">){ 
+                    </span><span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s4">0</span><span class="s1">; i&lt;finalResult.length(); i++){ 
+                        jsonO = finalResult.getJSONObject(i); 
+                        </span><span class="s2">//String bus_id = jsonO.get(&quot;bus_id&quot;).toString();</span><span class="s1"> 
+                        String route_id = jsonO.get(</span><span class="s3">&quot;route_id&quot;</span><span class="s1">).toString(); 
+                        String bus_name = jsonO.get(</span><span class="s3">&quot;bus_name&quot;</span><span class="s1">).toString(); 
+                        String livebusLat = jsonO.get(</span><span class="s3">&quot;lat&quot;</span><span class="s1">).toString(); 
+                        String livebusLng = jsonO.get(</span><span class="s3">&quot;lng&quot;</span><span class="s1">).toString(); 
+                        db.insertLivebus(route_id,bus_name,livebusLat,livebusLng); 
+                    } 
+                } 
+            }</span><span class="s0">catch</span><span class="s1">(JSONException e){e.printStackTrace();} 
+        }</span><span class="s0">catch</span><span class="s1">(IOException e){System.out.println(e);} 
+ 
+    } 
+} 
+</span></pre>
+</body>
+</html>

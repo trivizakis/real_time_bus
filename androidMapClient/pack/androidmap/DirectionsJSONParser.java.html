@@ -1,0 +1,147 @@
+<html>
+<head>
+<title>DirectionsJSONParser.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+.s4 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+DirectionsJSONParser.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">pack.androidmap; 
+ 
+</span><span class="s2">/** 
+ * Created by Lefteris on 1/4/2015. 
+ */</span><span class="s1"> 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+</span><span class="s0">import </span><span class="s1">java.util.HashMap; 
+</span><span class="s0">import </span><span class="s1">java.util.List; 
+ 
+</span><span class="s0">import </span><span class="s1">org.json.JSONArray; 
+</span><span class="s0">import </span><span class="s1">org.json.JSONException; 
+</span><span class="s0">import </span><span class="s1">org.json.JSONObject; 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.LatLng; 
+ 
+</span><span class="s0">public class </span><span class="s1">DirectionsJSONParser { 
+ 
+    </span><span class="s2">/** Receives a JSONObject and returns a list of lists containing latitude and longitude */</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">List&lt;List&lt;HashMap&lt;String,String&gt;&gt;&gt; parse(JSONObject jObject){ 
+ 
+        List&lt;List&lt;HashMap&lt;String, String&gt;&gt;&gt; routes = </span><span class="s0">new </span><span class="s1">ArrayList&lt;List&lt;HashMap&lt;String,String&gt;&gt;&gt;() ; 
+        JSONArray jRoutes = </span><span class="s0">null</span><span class="s1">; 
+        JSONArray jLegs = </span><span class="s0">null</span><span class="s1">; 
+        JSONArray jSteps = </span><span class="s0">null</span><span class="s1">; 
+        JSONObject jDistance = </span><span class="s0">null</span><span class="s1">; 
+        JSONObject jDuration = </span><span class="s0">null</span><span class="s1">; 
+ 
+        </span><span class="s0">try </span><span class="s1">{ 
+ 
+            jRoutes = jObject.getJSONArray(</span><span class="s3">&quot;routes&quot;</span><span class="s1">); 
+ 
+            </span><span class="s2">/** Traversing all routes */</span><span class="s1"> 
+            </span><span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s4">0</span><span class="s1">;i&lt;jRoutes.length();i++){ 
+                jLegs = ( (JSONObject)jRoutes.get(i)).getJSONArray(</span><span class="s3">&quot;legs&quot;</span><span class="s1">); 
+                List path = </span><span class="s0">new </span><span class="s1">ArrayList&lt;HashMap&lt;String, String&gt;&gt;(); 
+ 
+                </span><span class="s2">/** Traversing all legs */</span><span class="s1"> 
+                </span><span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">j=</span><span class="s4">0</span><span class="s1">;j&lt;jLegs.length();j++){ 
+</span><span class="s2">//START getting distance</span><span class="s1"> 
+                    </span><span class="s2">/** Getting distance from the json data */</span><span class="s1"> 
+                    jDistance = ((JSONObject) jLegs.get(j)).getJSONObject(</span><span class="s3">&quot;distance&quot;</span><span class="s1">); 
+                    HashMap&lt;String, String&gt; hmDistance = </span><span class="s0">new </span><span class="s1">HashMap&lt;String, String&gt;(); 
+                    hmDistance.put(</span><span class="s3">&quot;distance&quot;</span><span class="s1">, jDistance.getString(</span><span class="s3">&quot;text&quot;</span><span class="s1">)); 
+ 
+                    </span><span class="s2">/** Getting duration from the json data */</span><span class="s1"> 
+                    jDuration = ((JSONObject) jLegs.get(j)).getJSONObject(</span><span class="s3">&quot;duration&quot;</span><span class="s1">); 
+                    HashMap&lt;String, String&gt; hmDuration = </span><span class="s0">new </span><span class="s1">HashMap&lt;String, String&gt;(); 
+                    hmDuration.put(</span><span class="s3">&quot;duration&quot;</span><span class="s1">, jDuration.getString(</span><span class="s3">&quot;text&quot;</span><span class="s1">)); 
+ 
+                    </span><span class="s2">/** Adding distance object to the path */</span><span class="s1"> 
+                    path.add(hmDistance); 
+ 
+                    </span><span class="s2">/** Adding duration object to the path */</span><span class="s1"> 
+                    path.add(hmDuration); 
+</span><span class="s2">//END getting distance</span><span class="s1"> 
+                    jSteps = ( (JSONObject)jLegs.get(j)).getJSONArray(</span><span class="s3">&quot;steps&quot;</span><span class="s1">); 
+ 
+                    </span><span class="s2">/** Traversing all steps */</span><span class="s1"> 
+                    </span><span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">k=</span><span class="s4">0</span><span class="s1">;k&lt;jSteps.length();k++){ 
+                        String polyline = </span><span class="s3">&quot;&quot;</span><span class="s1">; 
+                        polyline = (String)((JSONObject)((JSONObject)jSteps.get(k)).get(</span><span class="s3">&quot;polyline&quot;</span><span class="s1">)).get(</span><span class="s3">&quot;points&quot;</span><span class="s1">); 
+                        List&lt;LatLng&gt; list = decodePoly(polyline); 
+ 
+                        </span><span class="s2">/** Traversing all points */</span><span class="s1"> 
+                        </span><span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">l=</span><span class="s4">0</span><span class="s1">;l&lt;list.size();l++){ 
+                            HashMap&lt;String, String&gt; hm = </span><span class="s0">new </span><span class="s1">HashMap&lt;String, String&gt;(); 
+                            hm.put(</span><span class="s3">&quot;lat&quot;</span><span class="s1">, Double.toString(((LatLng)list.get(l)).latitude) ); 
+                            hm.put(</span><span class="s3">&quot;lng&quot;</span><span class="s1">, Double.toString(((LatLng)list.get(l)).longitude) ); 
+                            path.add(hm); 
+                        } 
+                    } 
+                    routes.add(path); 
+                } 
+            } 
+ 
+        } </span><span class="s0">catch </span><span class="s1">(JSONException e) { 
+            e.printStackTrace(); 
+        }</span><span class="s0">catch </span><span class="s1">(Exception e){ 
+        } 
+ 
+ 
+        </span><span class="s0">return </span><span class="s1">routes; 
+    } 
+ 
+ 
+    </span><span class="s2">/** 
+     * Method to decode polyline points 
+     * Courtesy : http://jeffreysambells.com/2010/05/27/decoding-polylines-from-google-maps-direction-api-with-java 
+     * */</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">List&lt;LatLng&gt; decodePoly(String encoded) { 
+ 
+        List&lt;LatLng&gt; poly = </span><span class="s0">new </span><span class="s1">ArrayList&lt;LatLng&gt;(); 
+        </span><span class="s0">int </span><span class="s1">index = </span><span class="s4">0</span><span class="s1">, len = encoded.length(); 
+        </span><span class="s0">int </span><span class="s1">lat = </span><span class="s4">0</span><span class="s1">, lng = </span><span class="s4">0</span><span class="s1">; 
+ 
+        </span><span class="s0">while </span><span class="s1">(index &lt; len) { 
+            </span><span class="s0">int </span><span class="s1">b, shift = </span><span class="s4">0</span><span class="s1">, result = </span><span class="s4">0</span><span class="s1">; 
+            </span><span class="s0">do </span><span class="s1">{ 
+                b = encoded.charAt(index++) - </span><span class="s4">63</span><span class="s1">; 
+                result |= (b &amp; </span><span class="s4">0x1f</span><span class="s1">) &lt;&lt; shift; 
+                shift += </span><span class="s4">5</span><span class="s1">; 
+            } </span><span class="s0">while </span><span class="s1">(b &gt;= </span><span class="s4">0x20</span><span class="s1">); 
+            </span><span class="s0">int </span><span class="s1">dlat = ((result &amp; </span><span class="s4">1</span><span class="s1">) != </span><span class="s4">0 </span><span class="s1">? ~(result &gt;&gt; </span><span class="s4">1</span><span class="s1">) : (result &gt;&gt; </span><span class="s4">1</span><span class="s1">)); 
+            lat += dlat; 
+ 
+            shift = </span><span class="s4">0</span><span class="s1">; 
+            result = </span><span class="s4">0</span><span class="s1">; 
+            </span><span class="s0">do </span><span class="s1">{ 
+                b = encoded.charAt(index++) - </span><span class="s4">63</span><span class="s1">; 
+                result |= (b &amp; </span><span class="s4">0x1f</span><span class="s1">) &lt;&lt; shift; 
+                shift += </span><span class="s4">5</span><span class="s1">; 
+            } </span><span class="s0">while </span><span class="s1">(b &gt;= </span><span class="s4">0x20</span><span class="s1">); 
+            </span><span class="s0">int </span><span class="s1">dlng = ((result &amp; </span><span class="s4">1</span><span class="s1">) != </span><span class="s4">0 </span><span class="s1">? ~(result &gt;&gt; </span><span class="s4">1</span><span class="s1">) : (result &gt;&gt; </span><span class="s4">1</span><span class="s1">)); 
+            lng += dlng; 
+ 
+            LatLng p = </span><span class="s0">new </span><span class="s1">LatLng((((</span><span class="s0">double</span><span class="s1">) lat / </span><span class="s4">1E5</span><span class="s1">)), 
+                    (((</span><span class="s0">double</span><span class="s1">) lng / </span><span class="s4">1E5</span><span class="s1">))); 
+            poly.add(p); 
+        } 
+ 
+        </span><span class="s0">return </span><span class="s1">poly; 
+    } 
+} 
+</span></pre>
+</body>
+</html>

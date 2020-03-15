@@ -1,0 +1,188 @@
+<html>
+<head>
+<title>requestAsyncLivebus.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+.s4 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+requestAsyncLivebus.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">pack.androidmap; 
+ 
+</span><span class="s2">/** 
+ * Created by Lefteris on 6/12/2014. 
+ */</span><span class="s1"> 
+ 
+</span><span class="s0">import </span><span class="s1">android.app.Activity; 
+</span><span class="s0">import </span><span class="s1">android.app.ProgressDialog; 
+</span><span class="s0">import </span><span class="s1">android.content.Context; 
+</span><span class="s0">import </span><span class="s1">android.database.Cursor; 
+</span><span class="s0">import </span><span class="s1">android.database.sqlite.SQLiteDatabase; 
+</span><span class="s0">import </span><span class="s1">android.os.AsyncTask; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.os.Handler; 
+</span><span class="s0">import </span><span class="s1">android.util.Log; 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.GoogleMap; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.BitmapDescriptor; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.BitmapDescriptorFactory; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.LatLng; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.Marker; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.MarkerOptions; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+</span><span class="s0">import </span><span class="s1">java.util.List; 
+</span><span class="s0">import </span><span class="s1">java.util.Locale; 
+ 
+</span><span class="s0">public class </span><span class="s1">requestAsyncLivebus </span><span class="s0">extends </span><span class="s1">Activity{ 
+    </span><span class="s0">public </span><span class="s1">Context context; 
+    </span><span class="s0">public </span><span class="s1">ProgressDialog progressDialog; 
+    </span><span class="s0">private final </span><span class="s1">GoogleMap map; 
+    </span><span class="s0">public </span><span class="s1">String tableLivebus= </span><span class="s3">&quot;livebus&quot;</span><span class="s1">; 
+    </span><span class="s0">public </span><span class="s1">Marker datMarker; 
+    </span><span class="s0">private </span><span class="s1">DbAndroidMap db; 
+    </span><span class="s0">public </span><span class="s1">ArrayList&lt;ArrayList&lt;Object&gt;&gt; mapData; 
+    </span><span class="s0">public </span><span class="s1">ArrayList&lt;MarkerOptions&gt; livebus; 
+    </span><span class="s0">public final </span><span class="s1">List&lt;Marker&gt; markersToChange = </span><span class="s0">new </span><span class="s1">ArrayList&lt;Marker&gt;(); 
+    </span><span class="s0">final private </span><span class="s1">Handler handler = </span><span class="s0">new </span><span class="s1">Handler(); 
+    </span><span class="s0">public </span><span class="s1">String serverIp; 
+    </span><span class="s0">private boolean </span><span class="s1">firstTime = </span><span class="s0">true</span><span class="s1">; 
+    </span><span class="s0">public </span><span class="s1">ArrayList&lt;String&gt; choiceRoutes; 
+ 
+    </span><span class="s0">public void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        setContentView(R.layout.map_activity); 
+        progressDialog = </span><span class="s0">new </span><span class="s1">ProgressDialog(context); 
+    } 
+    </span><span class="s0">public void </span><span class="s1">execute(String ip) { 
+        serverIp=ip; 
+        </span><span class="s0">new </span><span class="s1">AsyncSendJ().execute(); 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">requestAsyncLivebus(Context context, GoogleMap map){ 
+        </span><span class="s0">this</span><span class="s1">.context = context; 
+        </span><span class="s0">this</span><span class="s1">.map =map; 
+    } 
+ 
+    </span><span class="s0">final </span><span class="s1">Runnable updateMarker = </span><span class="s0">new </span><span class="s1">Runnable() { 
+        @Override 
+        </span><span class="s0">public void </span><span class="s1">run() { 
+ 
+            SQLiteDatabase database = DatabaseManager.getInstance().openDatabase(); 
+            database.setLocale(Locale.getDefault()); 
+ 
+            </span><span class="s2">//String queryLive=&quot;SELECT * FROM &quot;+tableLivebus+&quot; INNER JOIN routes ON livebus.route_id=routes.id&quot;;                          //query apo db gia (livebus)</span><span class="s1"> 
+ 
+            String queryLive; 
+                </span><span class="s0">if</span><span class="s1">(!choiceRoutes.isEmpty()){ 
+                    queryLive=</span><span class="s3">&quot;SELECT * FROM &quot;</span><span class="s1">+tableLivebus+</span><span class="s3">&quot; INNER JOIN routes ON livebus.route_id=routes.id WHERE route IN ('&quot;</span><span class="s1">; 
+                    </span><span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s4">0</span><span class="s1">; i&lt;choiceRoutes.size(); i++){ 
+                        </span><span class="s0">if</span><span class="s1">(choiceRoutes.size()-</span><span class="s4">1</span><span class="s1">!=i) 
+                            queryLive+=choiceRoutes.get(i)+</span><span class="s3">&quot;' , '&quot;</span><span class="s1">; 
+                        </span><span class="s0">else</span><span class="s1"> 
+                            queryLive+=choiceRoutes.get(i)+</span><span class="s3">&quot;')&quot;</span><span class="s1">; 
+                    } 
+                } 
+                </span><span class="s0">else</span><span class="s1">{ 
+                    queryLive=</span><span class="s3">&quot;SELECT * FROM &quot;</span><span class="s1">+tableLivebus+</span><span class="s3">&quot; INNER JOIN routes ON livebus.route_id=routes.id&quot;</span><span class="s1">; 
+                } 
+                </span><span class="s2">//query apo db gia (livebus)</span><span class="s1"> 
+ 
+            </span><span class="s0">try</span><span class="s1"> 
+            { 
+            </span><span class="s0">if</span><span class="s1">(database.rawQuery(queryLive, </span><span class="s0">null</span><span class="s1">)!=</span><span class="s0">null</span><span class="s1">) 
+            { 
+                </span><span class="s0">final </span><span class="s1">Cursor liveData = database.rawQuery(queryLive, </span><span class="s0">null</span><span class="s1">);             </span><span class="s2">//klisi query gia livebus</span><span class="s1"> 
+ 
+                ArrayList&lt;MarkerOptions&gt; livebusMarkers = </span><span class="s0">new </span><span class="s1">returnMapStuff().getLivebusList(liveData); 
+ 
+                DatabaseManager.getInstance().deletedb(tableLivebus); 
+                DatabaseManager.getInstance().closeDatabase(); 
+ 
+                BitmapDescriptor liveBusIcon = BitmapDescriptorFactory.fromResource(R.drawable.bus); 
+ 
+                </span><span class="s0">if</span><span class="s1">(firstTime ==</span><span class="s0">true</span><span class="s1">) 
+                { 
+                    </span><span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s4">0</span><span class="s1">; i&lt;livebusMarkers.size(); i++) 
+                    { 
+                        datMarker = map.addMarker(livebusMarkers.get(i).icon(liveBusIcon)); 
+                        markersToChange.add(datMarker); 
+                    } 
+                    firstTime=</span><span class="s0">false</span><span class="s1">; 
+                    </span><span class="s2">//Log.i(&quot;First (and Last) Blood&quot;,&quot;&quot;);</span><span class="s1"> 
+                } 
+                </span><span class="s0">else</span><span class="s1"> 
+                { 
+                    </span><span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s4">0</span><span class="s1">; i&lt;livebusMarkers.size(); i++) 
+                    { 
+                        </span><span class="s0">if</span><span class="s1">(markersToChange.get(i)!= </span><span class="s0">null</span><span class="s1">) 
+                        { 
+                            </span><span class="s2">//Log.i(&quot;Fresh livabusMarkers Position: &quot;, &quot;&quot; + livebusMarkers.get(i).getPosition());</span><span class="s1"> 
+                            markersToChange.get(i).setPosition(livebusMarkers.get(i).getPosition()); 
+                        } 
+                        </span><span class="s0">else</span><span class="s1"> 
+                        { 
+                            datMarker = map.addMarker(livebusMarkers.get(i)); 
+                            markersToChange.add(datMarker); 
+                        } 
+                    } 
+                } 
+ 
+                livebusMarkers.clear(); 
+                 </span><span class="s2">//handler.post(this);//postDelayed(this, MARKER_UPDATE_INTERVAL); ayto prokalei exception kai exei amfivoli xrisimotita</span><span class="s1"> 
+            } 
+            }</span><span class="s0">catch</span><span class="s1">(Exception e) 
+            {   System.out.println(e.getMessage()); } 
+    }}; 
+ 
+ 
+    </span><span class="s0">private class </span><span class="s1">AsyncSendJ </span><span class="s0">extends </span><span class="s1">AsyncTask&lt;Void, Void, String&gt; { 
+ 
+        </span><span class="s0">private final </span><span class="s1">String livebusURL = </span><span class="s3">&quot;http://&quot;</span><span class="s1">+serverIp+</span><span class="s3">&quot;:8080/livebus/livebus.php&quot;</span><span class="s1">; 
+        </span><span class="s0">private static final </span><span class="s1">String username = </span><span class="s3">&quot;lefteris&quot;</span><span class="s1">; 
+        </span><span class="s0">private static final </span><span class="s1">String password = </span><span class="s3">&quot;thesis&quot;</span><span class="s1">; 
+ 
+        @Override 
+        </span><span class="s0">protected </span><span class="s1">String doInBackground(Void... params) { 
+            </span><span class="s0">new </span><span class="s1">SimpleHTTPPOSTRequesterLB(username, password, livebusURL, </span><span class="s3">&quot;livebus&quot;</span><span class="s1">).makeHTTPPOSTRequest(context); 
+ 
+            </span><span class="s0">return </span><span class="s3">&quot;NTA3!!&quot;</span><span class="s1">; 
+        } 
+ 
+        @Override 
+        </span><span class="s0">protected void </span><span class="s1">onPostExecute(String result){ 
+            </span><span class="s2">//for(int i=0; i&lt; markersToChange.size(); i++){</span><span class="s1"> 
+            </span><span class="s2">//    markersToChange.get(i).remove();}</span><span class="s1"> 
+            handler.post(updateMarker); 
+        } 
+ 
+ 
+        @Override 
+        </span><span class="s0">protected void </span><span class="s1">onProgressUpdate(Void... values) { 
+            </span><span class="s2">//Log.d(&quot;ProgressUpdate LiveBus&quot;, &quot;You are in progress update ... &quot; );</span><span class="s1"> 
+        } 
+ 
+        @Override 
+        </span><span class="s0">protected void </span><span class="s1">onPreExecute() { 
+            </span><span class="s2">//Log.d(&quot;PreExecute&quot;,&quot;Initializing LiveBus......&quot;);</span><span class="s1"> 
+        } 
+ 
+    } 
+    </span><span class="s0">public void </span><span class="s1">setSelectedRoutes(ArrayList&lt;String&gt; choiceRoutes){ 
+        </span><span class="s0">this</span><span class="s1">.choiceRoutes = choiceRoutes; 
+    } 
+}</span></pre>
+</body>
+</html>

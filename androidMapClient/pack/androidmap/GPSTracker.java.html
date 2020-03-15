@@ -1,0 +1,321 @@
+<html>
+<head>
+<title>GPSTracker.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,0,255); }
+.s4 { color: rgb(0,128,0); font-weight: bold; }
+.s5 { color: rgb(128,128,128); font-weight: bold; font-style: italic; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+GPSTracker.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">pack.androidmap; 
+ 
+</span><span class="s0">import </span><span class="s1">android.app.AlertDialog; 
+</span><span class="s0">import </span><span class="s1">android.app.Service; 
+</span><span class="s0">import </span><span class="s1">android.content.Context; 
+</span><span class="s0">import </span><span class="s1">android.content.DialogInterface; 
+</span><span class="s0">import </span><span class="s1">android.content.Intent; 
+</span><span class="s0">import </span><span class="s1">android.graphics.Color; 
+</span><span class="s0">import </span><span class="s1">android.location.Location; 
+</span><span class="s0">import </span><span class="s1">android.location.LocationListener; 
+</span><span class="s0">import </span><span class="s1">android.location.LocationManager; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.os.IBinder; 
+</span><span class="s0">import </span><span class="s1">android.provider.Settings; 
+</span><span class="s0">import </span><span class="s1">android.util.Log; 
+</span><span class="s0">import </span><span class="s1">android.widget.TextView; 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.GoogleMap; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.BitmapDescriptor; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.BitmapDescriptorFactory; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.LatLng; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.Marker; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.MarkerOptions; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.Polyline; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+ 
+</span><span class="s0">public class </span><span class="s1">GPSTracker </span><span class="s0">extends </span><span class="s1">Service </span><span class="s0">implements </span><span class="s1">LocationListener { 
+ 
+    </span><span class="s0">private final </span><span class="s1">Context mContext; 
+    </span><span class="s0">private </span><span class="s1">GoogleMap map; 
+    </span><span class="s0">private </span><span class="s1">Marker positionMarker; 
+    </span><span class="s0">private boolean </span><span class="s1">calledJustOnce = </span><span class="s0">false</span><span class="s1">; 
+    </span><span class="s0">private </span><span class="s1">TextView textVDD; 
+    </span><span class="s0">private </span><span class="s1">ArrayList&lt;Marker&gt; addedMarkers=</span><span class="s0">new </span><span class="s1">ArrayList&lt;Marker&gt;(); 
+    </span><span class="s0">public </span><span class="s1">Polyline polylineToRemove; 
+ 
+    </span><span class="s2">// flag for GPS status</span><span class="s1"> 
+    </span><span class="s0">boolean </span><span class="s1">isGPSEnabled = </span><span class="s0">false</span><span class="s1">; 
+ 
+    </span><span class="s2">// flag for network status</span><span class="s1"> 
+    </span><span class="s0">boolean </span><span class="s1">isNetworkEnabled = </span><span class="s0">false</span><span class="s1">; 
+ 
+    </span><span class="s2">// flag for GPS status</span><span class="s1"> 
+    </span><span class="s0">boolean </span><span class="s1">canGetLocation = </span><span class="s0">false</span><span class="s1">; 
+ 
+    Location location; </span><span class="s2">// location</span><span class="s1"> 
+    </span><span class="s0">double </span><span class="s1">latitude; </span><span class="s2">// latitude</span><span class="s1"> 
+    </span><span class="s0">double </span><span class="s1">longitude; </span><span class="s2">// longitude</span><span class="s1"> 
+ 
+    </span><span class="s2">// The minimum distance to change Updates in meters</span><span class="s1"> 
+    </span><span class="s0">private static final long </span><span class="s1">MIN_DISTANCE_CHANGE_FOR_UPDATES = </span><span class="s3">5</span><span class="s1">; </span><span class="s2">// 10 meters</span><span class="s1"> 
+ 
+    </span><span class="s2">// The minimum time between updates in milliseconds</span><span class="s1"> 
+    </span><span class="s0">private static final long </span><span class="s1">MIN_TIME_BW_UPDATES = </span><span class="s3">1000 </span><span class="s1">* </span><span class="s3">1 </span><span class="s1">* </span><span class="s3">1</span><span class="s1">; </span><span class="s2">// millisec * sec</span><span class="s1"> 
+ 
+    </span><span class="s2">// Declaring a Location Manager</span><span class="s1"> 
+    </span><span class="s0">protected </span><span class="s1">LocationManager locationManager; 
+ 
+    </span><span class="s0">public </span><span class="s1">GPSTracker(Context context, GoogleMap map,TextView textVDD,ArrayList&lt;Marker&gt; addedMarkers) { 
+        </span><span class="s0">this</span><span class="s1">.mContext = context; 
+        </span><span class="s0">this</span><span class="s1">.map =map; 
+        </span><span class="s0">this</span><span class="s1">.textVDD=textVDD; 
+        </span><span class="s0">this</span><span class="s1">.addedMarkers= addedMarkers; 
+        setMyLocationMarker(getLocation()); 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">Location getLocation() { 
+        </span><span class="s0">try </span><span class="s1">{ 
+            locationManager = (LocationManager) mContext 
+                    .getSystemService(LOCATION_SERVICE); 
+ 
+            </span><span class="s2">// getting GPS status</span><span class="s1"> 
+            isGPSEnabled = locationManager 
+                    .isProviderEnabled(LocationManager.GPS_PROVIDER); 
+ 
+            </span><span class="s2">// getting network status</span><span class="s1"> 
+            isNetworkEnabled = locationManager 
+                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER); 
+ 
+            </span><span class="s0">if </span><span class="s1">(!isGPSEnabled &amp;&amp; !isNetworkEnabled) { 
+                </span><span class="s2">// no network provider is enabled</span><span class="s1"> 
+            } </span><span class="s0">else </span><span class="s1">{ 
+                </span><span class="s0">this</span><span class="s1">.canGetLocation = </span><span class="s0">true</span><span class="s1">; 
+                </span><span class="s0">if </span><span class="s1">(isNetworkEnabled) { 
+                    locationManager.requestLocationUpdates( 
+                            LocationManager.NETWORK_PROVIDER, 
+                            MIN_TIME_BW_UPDATES, 
+                            MIN_DISTANCE_CHANGE_FOR_UPDATES, </span><span class="s0">this</span><span class="s1">); 
+                    Log.d(</span><span class="s4">&quot;Network&quot;</span><span class="s1">, </span><span class="s4">&quot;Network&quot;</span><span class="s1">); 
+                    </span><span class="s0">if </span><span class="s1">(locationManager != </span><span class="s0">null</span><span class="s1">) { 
+                        location = locationManager 
+                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER); 
+                        </span><span class="s0">if </span><span class="s1">(location != </span><span class="s0">null</span><span class="s1">) { 
+                            latitude = location.getLatitude(); 
+                            longitude = location.getLongitude(); 
+                        } 
+                    } 
+                } 
+                </span><span class="s2">// if GPS Enabled get lat/long using GPS Services</span><span class="s1"> 
+                </span><span class="s0">if </span><span class="s1">(isGPSEnabled) { 
+                    </span><span class="s0">if </span><span class="s1">(location == </span><span class="s0">null</span><span class="s1">) { 
+                        locationManager.requestLocationUpdates( 
+                                LocationManager.GPS_PROVIDER, 
+                                MIN_TIME_BW_UPDATES, 
+                                MIN_DISTANCE_CHANGE_FOR_UPDATES, </span><span class="s0">this</span><span class="s1">); 
+                        Log.d(</span><span class="s4">&quot;GPS Enabled&quot;</span><span class="s1">, </span><span class="s4">&quot;GPS Enabled&quot;</span><span class="s1">); 
+                        </span><span class="s0">if </span><span class="s1">(locationManager != </span><span class="s0">null</span><span class="s1">) { 
+                            location = locationManager 
+                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER); 
+                            </span><span class="s0">if </span><span class="s1">(location != </span><span class="s0">null</span><span class="s1">) { 
+                                latitude = location.getLatitude(); 
+                                longitude = location.getLongitude(); 
+                            } 
+                        } 
+                    } 
+                } 
+            } 
+ 
+        } </span><span class="s0">catch </span><span class="s1">(Exception e) { 
+            e.printStackTrace(); 
+        } 
+        </span><span class="s0">return </span><span class="s1">location; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setMyLocationMarker(Location datLocation) 
+    { 
+        </span><span class="s0">try</span><span class="s1"> 
+        { 
+             BitmapDescriptor myPosIcon = BitmapDescriptorFactory.fromResource(R.drawable.star); 
+             positionMarker=map.addMarker(</span><span class="s0">new </span><span class="s1">MarkerOptions() 
+                     .title(</span><span class="s4">&quot;ΕΔΩ ΕΙΜΑΙ!&quot;</span><span class="s1">) 
+                     .icon(myPosIcon) 
+                     .position(</span><span class="s0">new </span><span class="s1">LatLng(datLocation.getLatitude(), datLocation.getLongitude())) 
+             ); 
+            calledJustOnce=</span><span class="s0">true</span><span class="s1">; 
+        }</span><span class="s0">catch </span><span class="s1">(NullPointerException e){e.printStackTrace();} 
+</span><span class="s2">/* 
+        int index = getTheClosestMarker(location, addedMarkers); 
+        //ODIGIES ARXI myLatlng/heraklion 
+        DirectionHandler myDirect = new DirectionHandler(map,textVDD); 
+        DirectionHandler.DownloadTask downloadTask = new DirectionHandler.DownloadTask(); 
+ 
+        String urlForDirections = myDirect.getDirectionsUrl(new LatLng(location.getLatitude(), location.getLongitude()),addedMarkers.get(index).getPosition()); 
+        downloadTask.execute(urlForDirections); 
+ 
+        polylineToRemove =myDirect.getFinalPolyline(); 
+*/</span><span class="s1"> 
+    } 
+    </span><span class="s2">/** 
+     * Stop using GPS listener 
+     * Calling this function will stop using GPS in your app 
+     * */</span><span class="s1"> 
+    </span><span class="s0">public void </span><span class="s1">stopUsingGPS(){ 
+        </span><span class="s0">if</span><span class="s1">(locationManager != </span><span class="s0">null</span><span class="s1">){ 
+            locationManager.removeUpdates(GPSTracker.</span><span class="s0">this</span><span class="s1">); 
+        }        
+    } 
+     
+    </span><span class="s2">/** 
+     * Function to get latitude 
+     * */</span><span class="s1"> 
+    </span><span class="s0">public double </span><span class="s1">getLatitude(){ 
+        </span><span class="s0">if</span><span class="s1">(location != </span><span class="s0">null</span><span class="s1">){ 
+            latitude = location.getLatitude(); 
+        } 
+         
+        </span><span class="s2">// return latitude</span><span class="s1"> 
+        </span><span class="s0">return </span><span class="s1">latitude; 
+    } 
+     
+    </span><span class="s2">/** 
+     * Function to get longitude 
+     * */</span><span class="s1"> 
+    </span><span class="s0">public double </span><span class="s1">getLongitude(){ 
+        </span><span class="s0">if</span><span class="s1">(location != </span><span class="s0">null</span><span class="s1">){ 
+            longitude = location.getLongitude(); 
+        } 
+         
+        </span><span class="s2">// return longitude</span><span class="s1"> 
+        </span><span class="s0">return </span><span class="s1">longitude; 
+    } 
+     
+    </span><span class="s2">/** 
+     * Function to check GPS/wifi enabled 
+     * </span><span class="s5">@return </span><span class="s2">boolean 
+     * */</span><span class="s1"> 
+    </span><span class="s0">public boolean </span><span class="s1">canGetLocation() { 
+        </span><span class="s0">return this</span><span class="s1">.canGetLocation; 
+    } 
+     
+    </span><span class="s2">/** 
+     * Function to show settings alert dialog 
+     * On pressing Settings button will lauch Settings Options 
+     * */</span><span class="s1"> 
+    </span><span class="s0">public void </span><span class="s1">showSettingsAlert(){ 
+        AlertDialog.Builder alertDialog = </span><span class="s0">new </span><span class="s1">AlertDialog.Builder(mContext); 
+      
+        </span><span class="s2">// Setting Dialog Title</span><span class="s1"> 
+        alertDialog.setTitle(</span><span class="s4">&quot;GPS is settings&quot;</span><span class="s1">); 
+  
+        </span><span class="s2">// Setting Dialog Message</span><span class="s1"> 
+        alertDialog.setMessage(</span><span class="s4">&quot;GPS is not enabled. Do you want to go to settings menu?&quot;</span><span class="s1">); 
+  
+        </span><span class="s2">// On pressing Settings button</span><span class="s1"> 
+        alertDialog.setPositiveButton(</span><span class="s4">&quot;Settings&quot;</span><span class="s1">, </span><span class="s0">new </span><span class="s1">DialogInterface.OnClickListener() { 
+            </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog,</span><span class="s0">int </span><span class="s1">which) { 
+                Intent intent = </span><span class="s0">new </span><span class="s1">Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS); 
+                mContext.startActivity(intent); 
+            } 
+        }); 
+  
+        </span><span class="s2">// on pressing cancel button</span><span class="s1"> 
+        alertDialog.setNegativeButton(</span><span class="s4">&quot;Cancel&quot;</span><span class="s1">, </span><span class="s0">new </span><span class="s1">DialogInterface.OnClickListener() { 
+            </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog, </span><span class="s0">int </span><span class="s1">which) { 
+            dialog.cancel(); 
+            } 
+        }); 
+  
+        </span><span class="s2">// Showing Alert Message</span><span class="s1"> 
+        alertDialog.show(); 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onLocationChanged(Location location) { 
+        </span><span class="s0">try</span><span class="s1">{ 
+ 
+            </span><span class="s0">if</span><span class="s1">(calledJustOnce){ 
+ 
+                positionMarker.setPosition(</span><span class="s0">new </span><span class="s1">LatLng(location.getLatitude(), location.getLongitude())); 
+                </span><span class="s0">int </span><span class="s1">index = getTheClosestMarker(location, addedMarkers); 
+                </span><span class="s2">//ODIGIES ARXI myLatlng/heraklion</span><span class="s1"> 
+                DirectionHandler myDirect = </span><span class="s0">new </span><span class="s1">DirectionHandler(map,textVDD); 
+                DirectionHandler.DownloadTask downloadTask = </span><span class="s0">new </span><span class="s1">DirectionHandler.DownloadTask(); 
+ 
+                String urlForDirections = myDirect.getDirectionsUrl(</span><span class="s0">new </span><span class="s1">LatLng(location.getLatitude(), location.getLongitude()),addedMarkers.get(index).getPosition()); 
+                downloadTask.execute(urlForDirections); 
+ 
+                </span><span class="s0">if</span><span class="s1">(polylineToRemove!=</span><span class="s0">null</span><span class="s1">){polylineToRemove.remove();} 
+                polylineToRemove = myDirect.getFinalPolyline(); 
+                </span><span class="s0">if</span><span class="s1">(polylineToRemove!=</span><span class="s0">null</span><span class="s1">){polylineToRemove.remove();} 
+            } 
+            </span><span class="s0">else</span><span class="s1">{ 
+                </span><span class="s2">//Location myLatLng =getLocation();</span><span class="s1"> 
+                setMyLocationMarker(getLocation()); 
+            } 
+ 
+            </span><span class="s2">//Log.i(&quot;TON ALA3A TON MARKER&quot;, &quot;&quot;+positionMarker.getTitle());</span><span class="s1"> 
+        }</span><span class="s0">catch </span><span class="s1">(NullPointerException e){e.printStackTrace();} 
+ 
+ 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onProviderDisabled(String provider) { 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onProviderEnabled(String provider) { 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onStatusChanged(String provider, </span><span class="s0">int </span><span class="s1">status, Bundle extras) { 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public </span><span class="s1">IBinder onBind(Intent arg0) { 
+        </span><span class="s0">return null</span><span class="s1">; 
+    } 
+ 
+    </span><span class="s0">public int </span><span class="s1">getTheClosestMarker(Location myLocation,ArrayList&lt;Marker&gt; addedMarkers){ 
+ 
+ 
+        </span><span class="s0">float</span><span class="s1">[] suma= </span><span class="s0">new float</span><span class="s1">[addedMarkers.size()]; 
+        </span><span class="s0">float</span><span class="s1">[] distanceArray = </span><span class="s0">new float</span><span class="s1">[</span><span class="s3">1</span><span class="s1">]; 
+        </span><span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s3">0</span><span class="s1">; i&lt;addedMarkers.size(); i++) 
+        { 
+            Location.distanceBetween(myLocation.getLatitude(),myLocation.getLongitude(),addedMarkers.get(i).getPosition().latitude,addedMarkers.get(i).getPosition().longitude,distanceArray); 
+            suma[i]=distanceArray[</span><span class="s3">0</span><span class="s1">]; 
+        } 
+        </span><span class="s2">//for(int i=0; i&lt;suma.length; i++)</span><span class="s1"> 
+        </span><span class="s2">//    Log.i(&quot;Apostaseis se m? :&quot;,&quot;&quot;+suma[i]);</span><span class="s1"> 
+ 
+        </span><span class="s0">int </span><span class="s1">minIndex = </span><span class="s3">0</span><span class="s1">; 
+        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s3">1</span><span class="s1">; i &lt; suma.length; i++){ 
+            </span><span class="s0">float </span><span class="s1">newnumber = suma[i]; 
+            </span><span class="s0">if </span><span class="s1">((newnumber &lt; suma[minIndex])){ 
+                minIndex = i; 
+            } 
+        } 
+ 
+        </span><span class="s2">//Log.i(&quot;Apostaseis se minIndex---&gt; &quot;,&quot;&quot;+suma[minIndex]);</span><span class="s1"> 
+        </span><span class="s0">return </span><span class="s1">minIndex; 
+    } 
+ 
+} 
+</span></pre>
+</body>
+</html>

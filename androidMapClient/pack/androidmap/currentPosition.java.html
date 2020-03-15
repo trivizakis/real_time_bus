@@ -1,0 +1,117 @@
+<html>
+<head>
+<title>closestStop.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+closestStop.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">pack.androidmap; 
+ 
+</span><span class="s0">import </span><span class="s1">android.app.Service; 
+</span><span class="s0">import </span><span class="s1">android.content.Context; 
+</span><span class="s0">import </span><span class="s1">android.location.Criteria; 
+</span><span class="s0">import </span><span class="s1">android.location.Location; 
+</span><span class="s0">import </span><span class="s1">android.location.LocationListener; 
+</span><span class="s0">import </span><span class="s1">android.location.LocationManager; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.GoogleMap; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.LocationSource; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.LatLng; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.MarkerOptions; 
+ 
+</span><span class="s2">/** 
+ * Created by Lefteris on 22/3/2015. 
+ */</span><span class="s1"> 
+</span><span class="s0">public class </span><span class="s1">closestStop </span><span class="s0">implements </span><span class="s1">LocationListener, LocationSource {
+ 
+    </span><span class="s0">private </span><span class="s1">LatLng myPosition; 
+    </span><span class="s0">private </span><span class="s1">LocationManager locationManager; 
+    </span><span class="s0">private </span><span class="s1">Context context ; 
+    </span><span class="s0">private </span><span class="s1">GoogleMap map; 
+ 
+    </span><span class="s2">//Constructor</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">closestStop(Context applicationContext, GoogleMap map) {
+        </span><span class="s0">this</span><span class="s1">.context = applicationContext; 
+        </span><span class="s0">this</span><span class="s1">.map = map; 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">LatLng onCreate() 
+    { 
+    </span><span class="s2">// Enabling MyLocation Layer of Google Map</span><span class="s1"> 
+    map.setMyLocationEnabled(</span><span class="s0">true</span><span class="s1">); 
+ 
+    </span><span class="s2">// Getting LocationManager object from System Service LOCATION_SERVICE</span><span class="s1"> 
+   </span><span class="s2">//locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);</span><span class="s1"> 
+ 
+    </span><span class="s2">// Creating a criteria object to retrieve provider</span><span class="s1"> 
+    Criteria criteria = </span><span class="s0">new </span><span class="s1">Criteria(); 
+ 
+    </span><span class="s2">// Getting the name of the best provider</span><span class="s1"> 
+    String provider = locationManager.getBestProvider(criteria, </span><span class="s0">true</span><span class="s1">); 
+ 
+    </span><span class="s2">// Getting Current Location</span><span class="s1"> 
+    Location location = locationManager.getLastKnownLocation(provider); 
+ 
+    </span><span class="s0">if</span><span class="s1">(location!=</span><span class="s0">null</span><span class="s1">){ 
+        </span><span class="s2">// Getting latitude of the current location</span><span class="s1"> 
+        </span><span class="s0">double </span><span class="s1">latitude = location.getLatitude(); 
+ 
+        </span><span class="s2">// Getting longitude of the current location</span><span class="s1"> 
+        </span><span class="s0">double </span><span class="s1">longitude = location.getLongitude(); 
+ 
+        </span><span class="s2">// Creating a LatLng object for the current location</span><span class="s1"> 
+        LatLng latLng = </span><span class="s0">new </span><span class="s1">LatLng(latitude, longitude); 
+ 
+        myPosition = </span><span class="s0">new </span><span class="s1">LatLng(latitude, longitude); 
+    } 
+ 
+        </span><span class="s0">return </span><span class="s1">myPosition; 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onLocationChanged(Location location) { 
+ 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onStatusChanged(String s, </span><span class="s0">int </span><span class="s1">i, Bundle bundle) { 
+ 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onProviderEnabled(String s) { 
+ 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onProviderDisabled(String s) { 
+ 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">activate(OnLocationChangedListener onLocationChangedListener) { 
+ 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">deactivate() { 
+ 
+    } 
+ 
+} 
+</span></pre>
+</body>
+</html>

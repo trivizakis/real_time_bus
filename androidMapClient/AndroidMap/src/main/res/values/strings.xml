@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AndroidMap</string>
+    <string name="hello_world">Ανέμενε Αναγνώριση...</string>
+    <string name="action_settings">Settings</string>
+    <string name="web_server_ip">192.168.10.136</string>
+    <string name="promptDialog">Type Your Message :</string>
+    <string name="serverAddr">Διεύθυνση Web Server</string>
+    <string name="saveSetting">SAVE!</string>
+    <string name="welcomePane">Καλώς ήρθατε! Επιλέξτε προορισμό!</string>
+
+</resources>

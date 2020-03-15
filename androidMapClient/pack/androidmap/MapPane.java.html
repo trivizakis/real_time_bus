@@ -1,0 +1,228 @@
+<html>
+<head>
+<title>MapPane.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,0,255); }
+.s4 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+MapPane.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">pack.androidmap; 
+ 
+</span><span class="s2">/** 
+ * Created by Lefteris on 2/2/2014. 
+ */</span><span class="s1"> 
+ 
+</span><span class="s0">import </span><span class="s1">android.app.Fragment; 
+</span><span class="s0">import </span><span class="s1">android.content.Context; 
+</span><span class="s0">import </span><span class="s1">android.database.Cursor; 
+</span><span class="s0">import </span><span class="s1">android.database.sqlite.SQLiteDatabase; 
+</span><span class="s0">import </span><span class="s1">android.location.Location; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.util.Log; 
+</span><span class="s0">import </span><span class="s1">android.view.LayoutInflater; 
+</span><span class="s0">import </span><span class="s1">android.view.View; 
+</span><span class="s0">import </span><span class="s1">android.view.ViewGroup; 
+</span><span class="s0">import </span><span class="s1">android.widget.TextView; 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.CameraUpdateFactory; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.GoogleMap; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.MapFragment; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.BitmapDescriptor; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.BitmapDescriptorFactory; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.LatLng; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.Marker; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.MarkerOptions; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.Polyline; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.PolylineOptions; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+</span><span class="s0">import </span><span class="s1">java.util.Locale; 
+</span><span class="s0">import </span><span class="s1">java.util.Timer; 
+</span><span class="s0">import </span><span class="s1">java.util.TimerTask; 
+ 
+</span><span class="s0">import </span><span class="s1">pack.androidmap.DirectionHandler.DownloadTask; 
+ 
+ 
+ 
+ 
+    </span><span class="s0">public class </span><span class="s1">MapPane </span><span class="s0">extends </span><span class="s1">Fragment 
+    { 
+ 
+    </span><span class="s0">private </span><span class="s1">Context context; 
+    </span><span class="s0">private </span><span class="s1">ArrayList&lt;String&gt; choiceRoutes; 
+    </span><span class="s0">private </span><span class="s1">String ip; 
+    </span><span class="s0">private </span><span class="s1">GPSTracker myPositionObj; 
+ 
+    </span><span class="s0">private </span><span class="s1">View view; 
+    </span><span class="s0">private </span><span class="s1">GoogleMap map; 
+    </span><span class="s0">private </span><span class="s1">TextView tvDD; 
+</span><span class="s2">//constructor</span><span class="s1"> 
+   </span><span class="s0">public </span><span class="s1">MapPane(Context applicationContext) { 
+        </span><span class="s0">this</span><span class="s1">.context = applicationContext; 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public </span><span class="s1">View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) 
+    { 
+ 
+        </span><span class="s0">if</span><span class="s1">(view==</span><span class="s0">null </span><span class="s1">&amp;&amp; map ==</span><span class="s0">null</span><span class="s1">) 
+        { 
+        view = inflater.inflate(R.layout.map_activity, container, </span><span class="s0">false</span><span class="s1">); 
+</span><span class="s2">// Get a handle to the Map Fragment</span><span class="s1"> 
+        map = ((MapFragment) getFragmentManager() 
+                .findFragmentById(R.id.map)).getMap(); 
+        }</span><span class="s0">else</span><span class="s1"> 
+        { 
+            map.clear(); 
+        } 
+</span><span class="s2">//TextView gia provoli Apostasis kai Diarkeias me ta podia</span><span class="s1"> 
+        tvDD = (TextView) view.findViewById(R.id.tv_distance_time); 
+ 
+</span><span class="s2">//Kento tou provalomenou xarti</span><span class="s1"> 
+        LatLng heraklion = </span><span class="s0">new </span><span class="s1">LatLng(</span><span class="s3">35.336414</span><span class="s1">, </span><span class="s3">25.124273</span><span class="s1">); 
+        map.setMyLocationEnabled(</span><span class="s0">true</span><span class="s1">); 
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(heraklion, </span><span class="s3">13</span><span class="s1">)); 
+ 
+        </span><span class="s2">//requestAsync addMarkersPolylines =new requestAsync(context,map, spSettings);</span><span class="s1"> 
+        </span><span class="s2">//addMarkersPolylines.execute();</span><span class="s1"> 
+ 
+</span><span class="s2">//Topo8etei Markers kai Polylines sto xarti kai Epistrefei pinaka me tous Markers gia metepita epe3ergasia</span><span class="s1"> 
+        ArrayList&lt;Marker&gt; addedMarkers = setMarkersAndPolylines(choiceRoutes); 
+ 
+</span><span class="s2">//Bazei marker me tin 8esi mou kai ton ananewnei</span><span class="s1"> 
+        </span><span class="s2">//myPositionObj = new GPSTracker(context, map,tvDD,addedMarkers);</span><span class="s1"> 
+        </span><span class="s0">new </span><span class="s1">GPSTracker(context, map,tvDD,addedMarkers); 
+ 
+</span><span class="s2">//Gia tis odigies einai i 8esi mou</span><span class="s1"> 
+       </span><span class="s2">//LatLng myLatLng = new LatLng(myPositionObj.getLatitude(),myPositionObj.getLongitude());</span><span class="s1"> 
+ 
+ 
+ 
+</span><span class="s2">//ODIGIES TELOS</span><span class="s1"> 
+ 
+        </span><span class="s0">final </span><span class="s1">requestAsyncLivebus manipulateLivebus =</span><span class="s0">new </span><span class="s1">requestAsyncLivebus(context,map); 
+        </span><span class="s2">//final AsyncClearMap clearMap = new AsyncClearMap(context, map);</span><span class="s1"> 
+ 
+</span><span class="s2">//epanalamvani ana deyterolepto tin ananewsi twn livebuses</span><span class="s1"> 
+        Timer timer = </span><span class="s0">new </span><span class="s1">Timer(); 
+        timer.schedule(</span><span class="s0">new </span><span class="s1">TimerTask() 
+        { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">run() 
+            { 
+                </span><span class="s2">// run srC</span><span class="s1"> 
+                manipulateLivebus.setSelectedRoutes(choiceRoutes); 
+                manipulateLivebus.execute(ip); 
+                </span><span class="s2">//run src END</span><span class="s1"> 
+            } 
+        }, </span><span class="s3">0</span><span class="s1">, </span><span class="s3">1000</span><span class="s1">); 
+</span><span class="s2">//epanalipsi END</span><span class="s1"> 
+ 
+        map.setMapType(GoogleMap.MAP_TYPE_NORMAL); 
+ 
+        </span><span class="s0">return </span><span class="s1">view; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setIP(String ip)    { 
+        </span><span class="s0">this</span><span class="s1">.ip =ip; 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">setSelectedRoutes(ArrayList&lt;String&gt; choiceRoutes){ 
+        </span><span class="s0">this</span><span class="s1">.choiceRoutes = choiceRoutes; 
+    } 
+ 
+</span><span class="s2">//vazei markers kai polyline ston xarti</span><span class="s1"> 
+    </span><span class="s0">private </span><span class="s1">ArrayList&lt;Marker&gt; setMarkersAndPolylines(ArrayList&lt;String&gt; shownRoutes){ 
+            </span><span class="s2">//Runnable placeMapStuff = new Runnable() {</span><span class="s1"> 
+            </span><span class="s2">//    @Override</span><span class="s1"> 
+            </span><span class="s2">//    public void run() {</span><span class="s1"> 
+ 
+</span><span class="s2">//DBmanager gia prosvasi stin DB (pou ixe dimiourgi8ei stin requestAsync)</span><span class="s1"> 
+                    String table= </span><span class="s4">&quot;stops&quot;</span><span class="s1">; 
+                    String tableRoute = </span><span class="s4">&quot;routes&quot;</span><span class="s1">; 
+                    String query; 
+                    String queryRoutes; 
+                    ArrayList&lt;Marker&gt; addedMarkers = </span><span class="s0">new </span><span class="s1">ArrayList&lt;Marker&gt;(); 
+ 
+                    SQLiteDatabase database = DatabaseManager.getInstance().openDatabase(); 
+                    database.setLocale(Locale.getDefault()); 
+ 
+                </span><span class="s0">if</span><span class="s1">(!shownRoutes.isEmpty()){ 
+                    query=</span><span class="s4">&quot;SELECT * FROM &quot;</span><span class="s1">+table+</span><span class="s4">&quot; WHERE route IN ('&quot;</span><span class="s1">; 
+                    </span><span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s3">0</span><span class="s1">; i&lt;shownRoutes.size(); i++){ 
+                        </span><span class="s0">if</span><span class="s1">(shownRoutes.size()-</span><span class="s3">1</span><span class="s1">!=i) 
+                        query+=shownRoutes.get(i)+</span><span class="s4">&quot;' , '&quot;</span><span class="s1">; 
+                        </span><span class="s0">else</span><span class="s1"> 
+                            query+=shownRoutes.get(i)+</span><span class="s4">&quot;')&quot;</span><span class="s1">; 
+                    } 
+                } 
+                </span><span class="s0">else</span><span class="s1">{ 
+                    query=</span><span class="s4">&quot;SELECT * FROM &quot;</span><span class="s1">+table; 
+                } 
+                    query+=</span><span class="s4">&quot; ORDER BY lng asc&quot;</span><span class="s1">;</span><span class="s2">//+&quot; WHERE route=\&quot;&quot;+route+&quot;\&quot;&quot;;        //query apo db gia (stops)</span><span class="s1"> 
+ 
+                Log.i(</span><span class="s4">&quot;query markers: &quot;</span><span class="s1">,query); 
+                    queryRoutes=</span><span class="s4">&quot;SELECT * FROM &quot;</span><span class="s1">+tableRoute;                                                 </span><span class="s2">//query apo db gia (routes)</span><span class="s1"> 
+ 
+                    Cursor data = database.rawQuery(query, </span><span class="s0">null</span><span class="s1">);                                          </span><span class="s2">//klisi query gia stops</span><span class="s1"> 
+                    Cursor dataRoutes = database.rawQuery(queryRoutes, </span><span class="s0">null</span><span class="s1">);                            </span><span class="s2">//klisi queryRoutes</span><span class="s1"> 
+ 
+                    </span><span class="s0">final </span><span class="s1">ArrayList&lt;MarkerOptions&gt; markers = </span><span class="s0">new </span><span class="s1">returnMapStuff().getStopsList(data); 
+                    </span><span class="s0">final </span><span class="s1">ArrayList&lt;String&gt; routesStrings = </span><span class="s0">new </span><span class="s1">returnMapStuff().getRoutesArray(dataRoutes); 
+</span><span class="s2">//End data from db</span><span class="s1"> 
+ 
+                    </span><span class="s2">//DatabaseManager.getInstance().deletedb(table);</span><span class="s1"> 
+                    </span><span class="s2">//DatabaseManager.getInstance().deletedb(tableRoute);</span><span class="s1"> 
+                    DatabaseManager.getInstance().closeDatabase();           </span><span class="s2">//klinei tin sindesi me tin db</span><span class="s1"> 
+                    </span><span class="s2">//database.delete(&quot;stops&quot;,null,null);</span><span class="s1"> 
+ 
+</span><span class="s2">//test arrays data... ;)</span><span class="s1"> 
+                    </span><span class="s2">//for(int i=0; i&lt;routesStrings.size(); i++)</span><span class="s1"> 
+                    </span><span class="s2">//{</span><span class="s1"> 
+                    </span><span class="s2">//    Log.i(&quot;routeArray--&gt;&quot;,&quot;&quot;+routesStrings.get(i));</span><span class="s1"> 
+                    </span><span class="s2">//    Log.i(&quot;routeNameMarker--&gt;&quot;, &quot;&quot; + markers.get(i).getTitle());</span><span class="s1"> 
+                   </span><span class="s2">// }</span><span class="s1"> 
+</span><span class="s2">//test end</span><span class="s1"> 
+ 
+</span><span class="s2">//Add marker from db</span><span class="s1"> 
+                    </span><span class="s2">//custom marker???</span><span class="s1"> 
+                    </span><span class="s2">//BitmapDescriptor busStopIcon = BitmapDescriptorFactory.fromResource(R.drawable.bus);                                                 //custom marker</span><span class="s1"> 
+                    </span><span class="s2">//for(int i=0; i&lt;markers.size(); i++){(markers.get(i)).icon(busStopIcon);}</span><span class="s1"> 
+                    </span><span class="s2">//for(int i=0; i&lt;markers.size(); i++){(markers.get(i)).icon(BitmapDescriptorFactory.fromPath(&quot;icons/star.png&quot;));}</span><span class="s1"> 
+                    </span><span class="s2">//for (MarkerOptions marker1 : markers) {marker1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));};   //custom marker</span><span class="s1"> 
+                    BitmapDescriptor busStopIcon = BitmapDescriptorFactory.fromResource(R.drawable.busstop); 
+                    </span><span class="s0">for </span><span class="s1">(MarkerOptions marker1 : markers) {marker1.icon(busStopIcon);}; 
+                    </span><span class="s0">for </span><span class="s1">(MarkerOptions marker : markers) { 
+                        Marker tempMarker = map.addMarker(marker); 
+                        addedMarkers.add(tempMarker); 
+                    }                                      </span><span class="s2">//vazei markers ston xarti (stops)</span><span class="s1"> 
+</span><span class="s2">// ADD marker END</span><span class="s1"> 
+ 
+</span><span class="s2">//PolyLines ADD</span><span class="s1"> 
+                    ArrayList&lt;PolylineOptions&gt; polylines = </span><span class="s0">new </span><span class="s1">returnPolylines().getStopsPoly(markers,routesStrings); 
+                    </span><span class="s0">for </span><span class="s1">(PolylineOptions polyline : polylines) { 
+                        map.addPolyline(polyline); 
+                        </span><span class="s2">//Log.i(&quot;HowManyPolylinesExist?????????--&gt;&quot;, &quot;&quot;+polylines.size());</span><span class="s1"> 
+                    } 
+        </span><span class="s0">return </span><span class="s1">addedMarkers; 
+</span><span class="s2">//PolyLines ADD</span><span class="s1"> 
+        } 
+ 
+</span><span class="s2">//poios ine o pio kontinos</span><span class="s1"> 
+ 
+}</span></pre>
+</body>
+</html>

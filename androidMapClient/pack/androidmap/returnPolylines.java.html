@@ -1,0 +1,75 @@
+<html>
+<head>
+<title>returnPolylines.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+returnPolylines.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">pack.androidmap; 
+ 
+</span><span class="s0">import </span><span class="s1">android.graphics.Color; 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.LatLng; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.MarkerOptions; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.PolylineOptions; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+ 
+</span><span class="s2">/** 
+ * Created by Lefteris on 9/3/2014. 
+ */</span><span class="s1"> 
+</span><span class="s0">public class </span><span class="s1">returnPolylines { 
+    ArrayList&lt;PolylineOptions&gt; getStopsPoly(ArrayList&lt;MarkerOptions&gt; markers, ArrayList&lt;String&gt; routesNamesDB) 
+    { 
+        ArrayList&lt;PolylineOptions&gt; polyOptArray = </span><span class="s0">new </span><span class="s1">ArrayList&lt;PolylineOptions&gt;(); 
+        </span><span class="s2">//ArrayList&lt;ArrayList&lt;LatLng&gt;&gt; listLL = new ArrayList&lt;ArrayList&lt;LatLng&gt;&gt;();</span><span class="s1"> 
+        </span><span class="s0">int</span><span class="s1">[] color = {Color.BLACK,Color.CYAN,Color.GRAY,Color.GREEN,Color.YELLOW,Color.LTGRAY,Color.MAGENTA,Color.DKGRAY,Color.RED}; 
+        ArrayList&lt;LatLng&gt; nodeLL = </span><span class="s0">new </span><span class="s1">ArrayList&lt;LatLng&gt;(); 
+        PolylineOptions polyopt = </span><span class="s0">new </span><span class="s1">PolylineOptions() 
+            .color(Color.BLUE) 
+            .width(</span><span class="s3">2</span><span class="s1">); 
+        </span><span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">j=</span><span class="s3">0</span><span class="s1">; j&lt;routesNamesDB.size(); j++) 
+        { 
+            </span><span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s3">0</span><span class="s1">; i&lt;markers.size(); i++) 
+            { 
+                    </span><span class="s0">if</span><span class="s1">((routesNamesDB.get(j)).equals(markers.get(i).getTitle())) 
+                    { 
+                            nodeLL.add(markers.get(i).getPosition()); 
+                    } 
+            } 
+ 
+            polyopt.addAll(nodeLL); 
+            polyOptArray.add(polyopt); 
+            nodeLL.clear(); 
+            polyopt = </span><span class="s0">new </span><span class="s1">PolylineOptions() 
+                    .color(color[j]) 
+                    .width(</span><span class="s3">3</span><span class="s1">); 
+        } 
+ 
+ 
+        nodeLL.clear(); 
+ 
+        </span><span class="s0">return </span><span class="s1">polyOptArray; 
+    } 
+} 
+</span><span class="s2">/*              --Demo polyline options 
+        poly.add(new PolylineOptions() 
+                .add(markers.get(i).getPosition()) 
+                .width(5) 
+                .color(Color.RED)) 
+            */</span></pre>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">testJsonBot</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="button1">Send</string>
+    <string name="Exit">Exit!</string>
+    <string name="send">Send Now!</string>
+    <string name="Replace">Replace!</string>
+
+</resources>

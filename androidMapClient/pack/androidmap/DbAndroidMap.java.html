@@ -1,0 +1,149 @@
+<html>
+<head>
+<title>DbAndroidMap.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+.s4 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+DbAndroidMap.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">pack.androidmap; 
+ 
+</span><span class="s0">import </span><span class="s1">android.content.ContentValues; 
+</span><span class="s0">import </span><span class="s1">android.content.Context; 
+</span><span class="s0">import </span><span class="s1">android.database.Cursor; 
+</span><span class="s0">import </span><span class="s1">android.database.sqlite.SQLiteDatabase; 
+</span><span class="s0">import </span><span class="s1">android.database.sqlite.SQLiteOpenHelper; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.Locale; 
+ 
+</span><span class="s2">/** 
+ * Created by Lefteris on 4/3/2014. 
+ */</span><span class="s1"> 
+</span><span class="s0">public class </span><span class="s1">DbAndroidMap </span><span class="s0">extends </span><span class="s1">SQLiteOpenHelper { 
+ 
+    </span><span class="s0">static final </span><span class="s1">String dbName = </span><span class="s3">&quot;livemap&quot;</span><span class="s1">; 
+ 
+ 
+    </span><span class="s0">static final </span><span class="s1">String colID = </span><span class="s3">&quot;id&quot;</span><span class="s1">; 
+    </span><span class="s0">static final </span><span class="s1">String colRouteID = </span><span class="s3">&quot;route_id&quot;</span><span class="s1">; 
+    </span><span class="s0">static final </span><span class="s1">String colRoute = </span><span class="s3">&quot;route&quot;</span><span class="s1">; 
+    </span><span class="s0">static final </span><span class="s1">String colAddress = </span><span class="s3">&quot;address&quot;</span><span class="s1">; 
+    </span><span class="s0">static final </span><span class="s1">String colLat = </span><span class="s3">&quot;lat&quot;</span><span class="s1">; 
+    </span><span class="s0">static final </span><span class="s1">String colLng = </span><span class="s3">&quot;lng&quot;</span><span class="s1">; 
+ 
+    </span><span class="s0">static final </span><span class="s1">String coLbus_id = </span><span class="s3">&quot;bus_id&quot;</span><span class="s1">; 
+    </span><span class="s0">static final </span><span class="s1">String coLroute_id= </span><span class="s3">&quot;route_id&quot;</span><span class="s1">; 
+    </span><span class="s0">static final </span><span class="s1">String coLbus_name= </span><span class="s3">&quot;bus_name&quot;</span><span class="s1">; 
+    </span><span class="s0">static final </span><span class="s1">String coLlivebusLat= </span><span class="s3">&quot;livebusLat&quot;</span><span class="s1">; 
+    </span><span class="s0">static final </span><span class="s1">String coLlivebusLng= </span><span class="s3">&quot;livebusLng&quot;</span><span class="s1">; 
+ 
+    </span><span class="s0">static final </span><span class="s1">String table= </span><span class="s3">&quot;stops&quot;</span><span class="s1">; 
+    </span><span class="s0">static final </span><span class="s1">String table2 = </span><span class="s3">&quot;routes&quot;</span><span class="s1">; 
+    </span><span class="s0">static final </span><span class="s1">String table3 = </span><span class="s3">&quot;livebus&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String queryLivebus=</span><span class="s3">&quot;CREATE TABLE &quot;</span><span class="s1">+table3+</span><span class="s3">&quot;(&quot;</span><span class="s1">+coLbus_id+</span><span class="s3">&quot; INTEGER PRIMARY KEY, &quot;</span><span class="s1">+coLroute_id+</span><span class="s3">&quot; TEXT, &quot;</span><span class="s1">+coLbus_name+</span><span class="s3">&quot; TEXT, &quot;</span><span class="s1">+coLlivebusLat+</span><span class="s3">&quot; FLOAT, &quot;</span><span class="s1">+coLlivebusLng+</span><span class="s3">&quot; FLOAT)&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String queryStops=</span><span class="s3">&quot;CREATE TABLE &quot;</span><span class="s1">+table+</span><span class="s3">&quot;(&quot;</span><span class="s1">+colID+</span><span class="s3">&quot; INTEGER PRIMARY KEY, &quot;</span><span class="s1">+colRoute+</span><span class="s3">&quot; TEXT, &quot;</span><span class="s1">+colAddress+</span><span class="s3">&quot; TEXT, &quot;</span><span class="s1">+colLat+</span><span class="s3">&quot; FLOAT, &quot;</span><span class="s1">+colLng+</span><span class="s3">&quot; FLOAT)&quot;</span><span class="s1">; 
+    </span><span class="s0">public static final </span><span class="s1">String queryRoutes=</span><span class="s3">&quot;CREATE TABLE &quot;</span><span class="s1">+table2+</span><span class="s3">&quot;(&quot;</span><span class="s1">+colID+</span><span class="s3">&quot; INTEGER PRIMARY KEY, &quot;</span><span class="s1">+colRoute+</span><span class="s3">&quot; TEXT)&quot;</span><span class="s1">; 
+ 
+    </span><span class="s0">public </span><span class="s1">DbAndroidMap(Context context) { 
+        </span><span class="s0">super</span><span class="s1">(context, dbName, </span><span class="s0">null</span><span class="s1">, </span><span class="s4">33</span><span class="s1">); 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onCreate(SQLiteDatabase db) { 
+        db.setLocale(Locale.getDefault()); 
+        </span><span class="s2">//db.execSQL(&quot;DROP TABLE IF EXISTS TABLENAME&quot;);</span><span class="s1"> 
+        db.execSQL(</span><span class="s3">&quot;DROP  TABLE IF EXISTS &quot;</span><span class="s1">+table); 
+        db.execSQL(</span><span class="s3">&quot;DROP  TABLE IF EXISTS &quot;</span><span class="s1">+table2); 
+        db.execSQL(</span><span class="s3">&quot;DROP  TABLE IF EXISTS &quot;</span><span class="s1">+table3); 
+ 
+        db.execSQL(queryStops); 
+        db.execSQL(queryRoutes); 
+        db.execSQL(queryLivebus); 
+        </span><span class="s2">//InsertDepts(db);</span><span class="s1"> 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">onUpgrade(SQLiteDatabase db, </span><span class="s0">int </span><span class="s1">oldVersion, </span><span class="s0">int </span><span class="s1">newVersion) { 
+        onCreate(db); 
+    } 
+ 
+    </span><span class="s0">void </span><span class="s1">insertStops(String route, String address, String lat, String lng){ </span><span class="s2">//String id, &lt;--stops_id from json</span><span class="s1"> 
+        SQLiteDatabase db= </span><span class="s0">this</span><span class="s1">.getWritableDatabase(); 
+        ContentValues cv = </span><span class="s0">new </span><span class="s1">ContentValues(); 
+        </span><span class="s2">//cv.put(colID, Integer.valueOf(id));</span><span class="s1"> 
+        cv.put(colRoute, route); 
+        cv.put(colAddress, address); 
+        cv.put(colLat, Double.valueOf(lat)); 
+        cv.put(colLng, Double.valueOf(lng)); 
+        db.insert(table, </span><span class="s0">null</span><span class="s1">, cv); 
+        db.close(); 
+    } 
+ 
+ 
+    </span><span class="s0">public void </span><span class="s1">insertRoutes(String routeRoute) { 
+        SQLiteDatabase db= </span><span class="s0">this</span><span class="s1">.getWritableDatabase(); 
+        ContentValues cv = </span><span class="s0">new </span><span class="s1">ContentValues(); 
+        cv.put(colRoute, routeRoute); 
+        db.insert(table2, </span><span class="s0">null</span><span class="s1">, cv); 
+        db.close(); 
+    } 
+ 
+    </span><span class="s0">public void </span><span class="s1">insertLivebus(String route_id,String bus_name,String livebusLat,String livebusLng) 
+    { 
+        SQLiteDatabase db= </span><span class="s0">this</span><span class="s1">.getWritableDatabase(); 
+        ContentValues cv = </span><span class="s0">new </span><span class="s1">ContentValues(); 
+        cv.put(</span><span class="s3">&quot;bus_name&quot;</span><span class="s1">,bus_name); 
+        cv.put(</span><span class="s3">&quot;route_id&quot;</span><span class="s1">,route_id); 
+        cv.put(</span><span class="s3">&quot;livebusLat&quot;</span><span class="s1">,livebusLat); 
+        cv.put(</span><span class="s3">&quot;livebusLng&quot;</span><span class="s1">,livebusLng); 
+ 
+        </span><span class="s2">//db.execSQL(&quot;DROP  TABLE IF EXISTS &quot;+table3);</span><span class="s1"> 
+        </span><span class="s2">//db.execSQL(queryLivebus);</span><span class="s1"> 
+        db.insert(table3, </span><span class="s0">null</span><span class="s1">, cv); 
+        db.close(); 
+    } 
+ 
+} 
+ 
+</span><span class="s2">/* 
+    Cursor getStops(String route){ 
+        SQLiteDatabase db=this.getReadableDatabase(); 
+        String query=&quot;SELECT * FROM &quot;+table+&quot; WHERE route=\&quot;&quot;+route+&quot;\&quot;&quot;; 
+        Cursor data = db.rawQuery(query, null); 
+        db.close(); 
+        return data; 
+    } 
+ 
+    Cursor getRoutes(){ 
+        SQLiteDatabase db=this.getReadableDatabase(); 
+        String query=&quot;SELECT * FROM &quot;+table2; 
+        Cursor data = db.rawQuery(query, null); 
+        db.close(); 
+        return data; 
+    } 
+ 
+        @Override 
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) { 
+        //db.execSQL(&quot;DROP  TABLE &quot;+table); 
+        //db.execSQL(&quot;DROP  TABLE &quot;+table2); 
+        //db.execSQL(&quot;DROP TRIGGER IF EXISTS dept_id_trigger&quot;); 
+        //db.execSQL(&quot;DROP TRIGGER IF EXISTS dept_id_trigger22&quot;); 
+        //db.execSQL(&quot;DROP TRIGGER IF EXISTS fk_empdept_deptid&quot;); 
+        //db.execSQL(&quot;DROP VIEW IF EXISTS &quot;+viewEmps); 
+ 
+*/</span></pre>
+</body>
+</html>

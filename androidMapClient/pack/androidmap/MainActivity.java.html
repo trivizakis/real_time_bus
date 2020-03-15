@@ -1,0 +1,189 @@
+<html>
+<head>
+<title>MainActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+MainActivity.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">pack.androidmap; 
+ 
+</span><span class="s0">import </span><span class="s1">android.app.Activity; 
+</span><span class="s0">import </span><span class="s1">android.app.AlertDialog; 
+</span><span class="s0">import </span><span class="s1">android.app.Dialog; 
+</span><span class="s0">import </span><span class="s1">android.app.Fragment; 
+</span><span class="s0">import </span><span class="s1">android.app.FragmentManager; 
+</span><span class="s0">import </span><span class="s1">android.app.FragmentTransaction; 
+</span><span class="s0">import </span><span class="s1">android.app.ProgressDialog; 
+</span><span class="s0">import </span><span class="s1">android.content.Context; 
+</span><span class="s0">import </span><span class="s1">android.content.DialogInterface; 
+</span><span class="s0">import </span><span class="s1">android.content.SharedPreferences; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.util.Log; 
+</span><span class="s0">import </span><span class="s1">android.view.Display; 
+</span><span class="s0">import </span><span class="s1">android.view.LayoutInflater; 
+</span><span class="s0">import </span><span class="s1">android.view.View; 
+</span><span class="s0">import </span><span class="s1">android.view.WindowManager; 
+</span><span class="s0">import </span><span class="s1">android.widget.Button; 
+</span><span class="s0">import </span><span class="s1">android.widget.EditText; 
+</span><span class="s0">import </span><span class="s1">android.widget.ImageView; 
+</span><span class="s0">import </span><span class="s1">android.widget.TextView; 
+ 
+</span><span class="s0">public class </span><span class="s1">MainActivity </span><span class="s0">extends </span><span class="s1">Activity </span><span class="s0">implements </span><span class="s1">DialogInterface 
+{ 
+    </span><span class="s0">public </span><span class="s1">AlertDialog alertDialog; 
+    </span><span class="s0">public static </span><span class="s1">String serverAddress; 
+ 
+    @Override 
+    </span><span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+ 
+ 
+ 
+ 
+ 
+        </span><span class="s2">//String serverAddress= setIP();</span><span class="s1"> 
+        serverAddress= setIP(); 
+ 
+        </span><span class="s0">new </span><span class="s1">requestAsync(</span><span class="s0">this</span><span class="s1">.getApplicationContext(), serverAddress).execute(); 
+        </span><span class="s2">//requestAsync thing=new requestAsync(this.getApplicationContext(), setIP());</span><span class="s1"> 
+        </span><span class="s2">//thing.execute();</span><span class="s1"> 
+ 
+ 
+                </span><span class="s2">//ProgressDialog progressDialog = ProgressDialog.show(context, &quot;Loading Bitch...&quot;, &quot;Loading application View, please wait...&quot;, false, false);</span><span class="s1"> 
+                </span><span class="s2">// progressDialog.dismiss();</span><span class="s1"> 
+</span><span class="s2">/* 
+        try 
+        { 
+            //Get the current thread's token 
+            synchronized (this) 
+            {                    //Wait x milliseconds 
+                this.wait(300); 
+ 
+            } 
+        } 
+        catch (InterruptedException e){e.printStackTrace();} 
+*/</span><span class="s1"> 
+                setContentView(R.layout.activity_main); 
+ 
+                WindowManager WM1 = getWindowManager(); 
+                Display D1 = WM1.getDefaultDisplay(); 
+ 
+                </span><span class="s0">final </span><span class="s1">FirstPane _firstPaneFrag = </span><span class="s0">new </span><span class="s1">FirstPane(</span><span class="s0">this</span><span class="s1">.getApplicationContext()); 
+                focusFragment(_firstPaneFrag); 
+ 
+ 
+            } 
+ 
+            </span><span class="s0">private </span><span class="s1">String setIP() { 
+                SharedPreferences spSettings = getSharedPreferences(</span><span class="s3">&quot;settings&quot;</span><span class="s1">, </span><span class="s0">this</span><span class="s1">.MODE_PRIVATE); 
+                String webServerIpOrName = spSettings.getString(</span><span class="s3">&quot;webServerName&quot;</span><span class="s1">, </span><span class="s0">null</span><span class="s1">); 
+                </span><span class="s0">if </span><span class="s1">(webServerIpOrName == </span><span class="s0">null</span><span class="s1">) {        </span><span class="s2">//IF NULL</span><span class="s1"> 
+ 
+ 
+                    webServerIpOrName=createAlertBox(); 
+                    </span><span class="s2">//SettingsPane _settingsPane = new SettingsPane(this);</span><span class="s1"> 
+                    webServerIpOrName= </span><span class="s0">this</span><span class="s1">.getResources().getString(R.string.web_server_ip); 
+                    </span><span class="s2">//webServerIpOrName = spSettings.getString(&quot;webServerName&quot;, null);</span><span class="s1"> 
+                } 
+ 
+                </span><span class="s2">//Log.i(&quot;webServerIpOrName&quot;,webServerIpOrName);</span><span class="s1"> 
+                </span><span class="s0">return </span><span class="s1">webServerIpOrName; 
+            } 
+ 
+            </span><span class="s0">public void </span><span class="s1">focusFragment(FirstPane F1) { 
+                </span><span class="s2">// Create a new Fragment to be placed in the activity layout</span><span class="s1"> 
+                FragmentManager FM1 = getFragmentManager(); 
+                FragmentTransaction FT1 = FM1.beginTransaction(); 
+ 
+                </span><span class="s0">try </span><span class="s1">{ 
+                    FT1.replace(R.id.container, F1); 
+                } </span><span class="s0">catch </span><span class="s1">(Exception e) { 
+                } 
+                ; 
+                FT1.commit(); 
+                FT1 = </span><span class="s0">null</span><span class="s1">; 
+                FM1 = </span><span class="s0">null</span><span class="s1">; 
+            } 
+ 
+            </span><span class="s0">public void </span><span class="s1">focusRealFragment(Fragment F1) { 
+                </span><span class="s2">// Create a new Fragment to be placed in the activity layout</span><span class="s1"> 
+                FragmentManager FM1 = getFragmentManager(); 
+                FragmentTransaction FT1 = FM1.beginTransaction(); 
+ 
+ 
+                </span><span class="s0">try </span><span class="s1">{ 
+                    FT1.replace(R.id.container, F1); 
+                } </span><span class="s0">catch </span><span class="s1">(Exception e) { 
+                    e.printStackTrace(); 
+                } 
+                ; 
+                FT1.addToBackStack(</span><span class="s0">null</span><span class="s1">); 
+                FT1.commit(); 
+                FT1 = </span><span class="s0">null</span><span class="s1">; 
+                FM1 = </span><span class="s0">null</span><span class="s1">; 
+            } 
+    </span><span class="s0">public </span><span class="s1">String createAlertBox(){ 
+        LayoutInflater li = LayoutInflater.from(</span><span class="s0">this</span><span class="s1">); 
+        View promptsView = li.inflate(R.layout.prompts, </span><span class="s0">null</span><span class="s1">); 
+ 
+        AlertDialog.Builder alertDialogBuilder = </span><span class="s0">new </span><span class="s1">AlertDialog.Builder( 
+                </span><span class="s0">this</span><span class="s1">); 
+ 
+        </span><span class="s2">// set prompts.xml to alertdialog builder</span><span class="s1"> 
+        alertDialogBuilder.setView(promptsView); 
+ 
+        </span><span class="s0">final </span><span class="s1">EditText userInput = (EditText) promptsView 
+                .findViewById(R.id.editTextDialogUserInput); 
+ 
+        </span><span class="s2">// set dialog message</span><span class="s1"> 
+        alertDialogBuilder 
+                .setCancelable(</span><span class="s0">false</span><span class="s1">) 
+                .setPositiveButton(</span><span class="s3">&quot;OK&quot;</span><span class="s1">, 
+                        </span><span class="s0">new </span><span class="s1">DialogInterface.OnClickListener() { 
+                            </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog,</span><span class="s0">int </span><span class="s1">id) { 
+                                </span><span class="s2">// get user input and set it to result</span><span class="s1"> 
+                                </span><span class="s2">// edit text</span><span class="s1"> 
+                                serverAddress =userInput.getText().toString(); 
+                            } 
+                        }) 
+                .setNegativeButton(</span><span class="s3">&quot;Cancel&quot;</span><span class="s1">, 
+                        </span><span class="s0">new </span><span class="s1">DialogInterface.OnClickListener() { 
+                            </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog,</span><span class="s0">int </span><span class="s1">id) { 
+                                dialog.cancel(); 
+                            } 
+                        }); 
+ 
+        </span><span class="s2">// create alert dialog</span><span class="s1"> 
+        alertDialog = alertDialogBuilder.create(); 
+ 
+        </span><span class="s2">// show it</span><span class="s1"> 
+        alertDialog.show(); 
+ 
+        </span><span class="s0">return </span><span class="s1">serverAddress; 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">cancel() { 
+ 
+    } 
+ 
+    @Override 
+    </span><span class="s0">public void </span><span class="s1">dismiss() { 
+ 
+    } 
+}</span></pre>
+</body>
+</html>

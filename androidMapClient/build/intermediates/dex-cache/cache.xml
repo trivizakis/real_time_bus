@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Lefteris\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpclient-android\4.3.1-SNAPSHOT\ba4de827093ff4810c015bd3f64640817f041fdb\httpclient-android-4.3.1-SNAPSHOT.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="ba4de827093ff4810c015bd3f64640817f041fdb">
+        <dex dex="C:\Users\Lefteris\Desktop\new Android Studio Projects\androidMap\AndroidMap\build\intermediates\pre-dexed\debug\httpclient-android-4.3.1-SNAPSHOT-a2928d051188a3e9b7fc3e264567295be20389be.jar" />
+    </item>
+    <item
+        jar="C:\Users\Lefteris\Desktop\new Android Studio Projects\androidMap\AndroidMap\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\jars\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="1ee588ff2c4daf7b97c1cbf922a6c7f027285c2f">
+        <dex dex="C:\Users\Lefteris\Desktop\new Android Studio Projects\androidMap\AndroidMap\build\intermediates\pre-dexed\debug\classes-ae4f604bf42fbf45d4915023ade228dad7a9e00e.jar" />
+    </item>
+    <item
+        jar="C:\Users\Lefteris\Desktop\new Android Studio Projects\androidMap\AndroidMap\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\jars\libs\internal_impl-22.2.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="57f2ab85c164ff1676ec64dee787981c046fab79">
+        <dex dex="C:\Users\Lefteris\Desktop\new Android Studio Projects\androidMap\AndroidMap\build\intermediates\pre-dexed\debug\internal_impl-22.2.0-3c01c5f36a7ef8f65884bf23a6179df70d2dda99.jar" />
+    </item>
+    <item
+        jar="C:\Users\Lefteris\.gradle\caches\modules-2\files-2.1\com.googlecode.json-simple\json-simple\1.1\5e303a03d04e6788dddfa3655272580ae0fc13bb\json-simple-1.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="5e303a03d04e6788dddfa3655272580ae0fc13bb">
+        <dex dex="C:\Users\Lefteris\Desktop\new Android Studio Projects\androidMap\AndroidMap\build\intermediates\pre-dexed\debug\json-simple-1.1-fa2eae43065e1d2050fe61a80dc64b2cb8f08c15.jar" />
+    </item>
+    <item
+        jar="C:\Users\Lefteris\Desktop\new Android Studio Projects\androidMap\AndroidMap\build\intermediates\exploded-aar\com.google.android.gms\play-services\3.1.36\jars\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="7421dcb3ed9db47a59ec618e2398f0df65c2d480">
+        <dex dex="C:\Users\Lefteris\Desktop\new Android Studio Projects\androidMap\AndroidMap\build\intermediates\pre-dexed\debug\classes-647a09ad0045dea88228965b69544141ae6cb23f.jar" />
+    </item>
+    <item
+        jar="D:\android-studio\sdk\extras\android\m2repository\com\android\support\support-annotations\22.2.0\support-annotations-22.2.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="66b42a1f3eb7676070b7ef7f14b603483aecbee1">
+        <dex dex="C:\Users\Lefteris\Desktop\new Android Studio Projects\androidMap\AndroidMap\build\intermediates\pre-dexed\debug\support-annotations-22.2.0-d82c28671c17d79e3c7c0c2c2e1352f37caa1408.jar" />
+    </item>
+    <item
+        jar="C:\Users\Lefteris\Desktop\new Android Studio Projects\androidMap\AndroidMap\build\intermediates\exploded-aar\com.android.support\appcompat-v7\22.2.0\jars\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="73753982da6bde518f3a4c6b372749981d14d1a0">
+        <dex dex="C:\Users\Lefteris\Desktop\new Android Studio Projects\androidMap\AndroidMap\build\intermediates\pre-dexed\debug\classes-1712afe8035c948df9f09e2e58b8e39763bf1c8f.jar" />
+    </item>
+
+</items>

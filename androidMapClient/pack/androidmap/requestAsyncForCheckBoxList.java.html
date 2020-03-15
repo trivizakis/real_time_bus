@@ -1,0 +1,130 @@
+<html>
+<head>
+<title>requestAsyncForCheckBoxList.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+.s4 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+requestAsyncForCheckBoxList.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">pack.androidmap; 
+ 
+</span><span class="s0">import </span><span class="s1">android.app.Activity; 
+</span><span class="s0">import </span><span class="s1">android.content.Context; 
+</span><span class="s0">import </span><span class="s1">android.database.Cursor; 
+</span><span class="s0">import </span><span class="s1">android.database.sqlite.SQLiteDatabase; 
+</span><span class="s0">import </span><span class="s1">android.os.AsyncTask; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.os.Handler; 
+</span><span class="s0">import </span><span class="s1">android.util.Log; 
+</span><span class="s0">import </span><span class="s1">android.widget.CheckBox; 
+</span><span class="s0">import </span><span class="s1">android.widget.LinearLayout; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+</span><span class="s0">import </span><span class="s1">java.util.Locale; 
+ 
+</span><span class="s2">/** 
+ * Created by Lefteris on 26/3/2015. 
+ */</span><span class="s1"> 
+</span><span class="s0">public class </span><span class="s1">requestAsyncForCheckBoxList </span><span class="s0">extends </span><span class="s1">Activity { 
+ 
+    </span><span class="s0">private </span><span class="s1">Context context; 
+    </span><span class="s0">private </span><span class="s1">String ip; 
+    </span><span class="s0">private </span><span class="s1">Handler handler = </span><span class="s0">new </span><span class="s1">Handler(); 
+    </span><span class="s0">private </span><span class="s1">LinearLayout ll; 
+    </span><span class="s0">public int </span><span class="s1">routesStringsLength; 
+    String tableRoute = </span><span class="s3">&quot;routes&quot;</span><span class="s1">; 
+ 
+    </span><span class="s0">public void </span><span class="s1">execute() { 
+        </span><span class="s0">new </span><span class="s1">AsyncGetNames().execute(); 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">requestAsyncForCheckBoxList(Context context){ 
+        </span><span class="s0">this</span><span class="s1">.context = context; 
+            } 
+    </span><span class="s0">public void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        setContentView(R.layout.fragment_main); 
+    } 
+ 
+    Runnable getRouteNamesTable = </span><span class="s0">new </span><span class="s1">Runnable() { 
+        @Override 
+            </span><span class="s0">public void </span><span class="s1">run() { 
+ 
+</span><span class="s2">//DBmanager gia prosvasi stin DB (pou ixe dimiourgi8ei stin requestAsync)</span><span class="s1"> 
+</span><span class="s2">//String route = &quot;partali&quot;;</span><span class="s1"> 
+ 
+            SQLiteDatabase database = DatabaseManager.getInstance().openDatabase(); 
+            database.setLocale(Locale.getDefault()); 
+ 
+            String queryRoutes=</span><span class="s3">&quot;SELECT * FROM &quot;</span><span class="s1">+tableRoute;                                                 </span><span class="s2">//query apo db gia (routes)</span><span class="s1"> 
+ 
+            Cursor dataRoutes = database.rawQuery(queryRoutes, </span><span class="s0">null</span><span class="s1">);                            </span><span class="s2">//klisi queryRoutes</span><span class="s1"> 
+ 
+            ArrayList&lt;String&gt; routesStrings = </span><span class="s0">new </span><span class="s1">returnMapStuff().getRoutesArray(dataRoutes); 
+</span><span class="s2">//End data from db</span><span class="s1"> 
+            DatabaseManager.getInstance().closeDatabase(); 
+ 
+            routesStringsLength = routesStrings.size(); 
+            </span><span class="s0">try</span><span class="s1">{ 
+ 
+                   CheckBox cb; 
+                   </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s4">0</span><span class="s1">; i &lt; routesStrings.size(); i++) { 
+                        cb = </span><span class="s0">new </span><span class="s1">CheckBox(context); 
+                        cb.setText(routesStrings.get(i)); 
+                        cb.setId(i); 
+                        ll.addView(cb); 
+                    } 
+ 
+            }</span><span class="s0">catch </span><span class="s1">(Exception e){e.printStackTrace();} 
+ 
+            dataRoutes.close(); 
+            routesStrings.clear(); 
+        } 
+    }; 
+ 
+    </span><span class="s0">private class </span><span class="s1">AsyncGetNames  </span><span class="s0">extends </span><span class="s1">AsyncTask&lt;Void, Void, String&gt; { 
+        </span><span class="s0">private final </span><span class="s1">String routesURL = </span><span class="s3">&quot;http://&quot;</span><span class="s1">+ ip +</span><span class="s3">&quot;:8080/livebus/routes.php&quot;</span><span class="s1">; 
+        </span><span class="s0">private static final </span><span class="s1">String username = </span><span class="s3">&quot;lefteris&quot;</span><span class="s1">; 
+        </span><span class="s0">private static final </span><span class="s1">String password = </span><span class="s3">&quot;thesis&quot;</span><span class="s1">; 
+ 
+        @Override 
+        </span><span class="s0">protected </span><span class="s1">String doInBackground(Void... voids) { 
+ 
+            </span><span class="s0">new </span><span class="s1">SimpleHTTPPOSTRequester(username, password, routesURL, </span><span class="s3">&quot;routes&quot;</span><span class="s1">).makeHTTPPOSTRequest(context); 
+ 
+            </span><span class="s0">return </span><span class="s3">&quot;Completed!&quot;</span><span class="s1">; 
+        } 
+ 
+        @Override 
+        </span><span class="s0">protected void </span><span class="s1">onPostExecute(String result){ 
+            handler.post(getRouteNamesTable); 
+        } 
+    } 
+ 
+    </span><span class="s0">public int </span><span class="s1">getHowManyCheckeboxes(){ 
+        Log.i(</span><span class="s3">&quot;I AM THE (R) NEO&quot;</span><span class="s1">,</span><span class="s3">&quot;&quot;</span><span class="s1">+routesStringsLength); 
+        </span><span class="s0">return </span><span class="s1">routesStringsLength; 
+    } 
+    </span><span class="s0">public void </span><span class="s1">setIp(String ip){ 
+        </span><span class="s0">this</span><span class="s1">.ip=ip; 
+    } 
+    </span><span class="s0">public void </span><span class="s1">setLL(LinearLayout ll){ 
+        </span><span class="s0">this</span><span class="s1">.ll =ll; 
+    } 
+} 
+</span></pre>
+</body>
+</html>

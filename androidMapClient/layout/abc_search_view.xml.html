@@ -1,0 +1,167 @@
+<html>
+<head>
+<title>abc_search_view.xml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { font-style: italic; }
+.s1 { color: rgb(0,0,255); font-weight: bold; }
+.s2 { }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+.s4 { }
+.s5 { color: rgb(128,128,128); font-style: italic; }
+.s6 { color: rgb(0,0,128); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+abc_search_view.xml</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">&lt;?</span><span class="s1">xml version=</span><span class="s3">&quot;1.0&quot; </span><span class="s1">encoding=</span><span class="s3">&quot;utf-8&quot;</span><span class="s0">?&gt;</span><span class="s4"> 
+</span><span class="s5">&lt;!-- 
+/* 
+ * Copyright (C) 2014 The Android Open Source Project 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ */ 
+ 
+--&gt;</span><span class="s4"> 
+</span><span class="s2">&lt;</span><span class="s6">LinearLayout </span><span class="s1">xmlns:android=</span><span class="s3">&quot;http://schemas.android.com/apk/res/android&quot;</span><span class="s2"> 
+        </span><span class="s1">android:id=</span><span class="s3">&quot;@+id/search_bar&quot;</span><span class="s2"> 
+        </span><span class="s1">android:layout_width=</span><span class="s3">&quot;match_parent&quot;</span><span class="s2"> 
+        </span><span class="s1">android:layout_height=</span><span class="s3">&quot;match_parent&quot;</span><span class="s2"> 
+        </span><span class="s1">android:orientation=</span><span class="s3">&quot;horizontal&quot;</span><span class="s2">&gt;</span><span class="s4"> 
+ 
+    </span><span class="s5">&lt;!-- This is actually used for the badge icon *or* the badge label (or neither) --&gt;</span><span class="s4"> 
+    </span><span class="s2">&lt;</span><span class="s6">TextView</span><span class="s2"> 
+            </span><span class="s1">android:id=</span><span class="s3">&quot;@+id/search_badge&quot;</span><span class="s2"> 
+            </span><span class="s1">android:layout_width=</span><span class="s3">&quot;wrap_content&quot;</span><span class="s2"> 
+            </span><span class="s1">android:layout_height=</span><span class="s3">&quot;match_parent&quot;</span><span class="s2"> 
+            </span><span class="s1">android:gravity=</span><span class="s3">&quot;center_vertical&quot;</span><span class="s2"> 
+            </span><span class="s1">android:layout_marginBottom=</span><span class="s3">&quot;2dip&quot;</span><span class="s2"> 
+            </span><span class="s1">android:drawablePadding=</span><span class="s3">&quot;0dip&quot;</span><span class="s2"> 
+            </span><span class="s1">android:textAppearance=</span><span class="s3">&quot;?android:attr/textAppearanceMedium&quot;</span><span class="s2"> 
+            </span><span class="s1">android:textColor=</span><span class="s3">&quot;?android:attr/textColorPrimary&quot;</span><span class="s2"> 
+            </span><span class="s1">android:visibility=</span><span class="s3">&quot;gone&quot; </span><span class="s2">/&gt;</span><span class="s4"> 
+ 
+    </span><span class="s2">&lt;</span><span class="s6">android.support.v7.internal.widget.TintImageView</span><span class="s2"> 
+            </span><span class="s1">android:id=</span><span class="s3">&quot;@+id/search_button&quot;</span><span class="s2"> 
+            </span><span class="s1">style=</span><span class="s3">&quot;?attr/actionButtonStyle&quot;</span><span class="s2"> 
+            </span><span class="s1">android:layout_width=</span><span class="s3">&quot;wrap_content&quot;</span><span class="s2"> 
+            </span><span class="s1">android:layout_height=</span><span class="s3">&quot;match_parent&quot;</span><span class="s2"> 
+            </span><span class="s1">android:layout_gravity=</span><span class="s3">&quot;center_vertical&quot;</span><span class="s2"> 
+            </span><span class="s1">android:focusable=</span><span class="s3">&quot;true&quot;</span><span class="s2"> 
+            </span><span class="s1">android:contentDescription=</span><span class="s3">&quot;@string/abc_searchview_description_search&quot; </span><span class="s2">/&gt;</span><span class="s4"> 
+ 
+    </span><span class="s2">&lt;</span><span class="s6">LinearLayout</span><span class="s2"> 
+            </span><span class="s1">android:id=</span><span class="s3">&quot;@+id/search_edit_frame&quot;</span><span class="s2"> 
+            </span><span class="s1">android:layout_width=</span><span class="s3">&quot;wrap_content&quot;</span><span class="s2"> 
+            </span><span class="s1">android:layout_height=</span><span class="s3">&quot;wrap_content&quot;</span><span class="s2"> 
+            </span><span class="s1">android:layout_weight=</span><span class="s3">&quot;1&quot;</span><span class="s2"> 
+            </span><span class="s1">android:layout_gravity=</span><span class="s3">&quot;center_vertical&quot;</span><span class="s2"> 
+            </span><span class="s1">android:layout_marginTop=</span><span class="s3">&quot;4dip&quot;</span><span class="s2"> 
+            </span><span class="s1">android:layout_marginBottom=</span><span class="s3">&quot;4dip&quot;</span><span class="s2"> 
+            </span><span class="s1">android:layout_marginLeft=</span><span class="s3">&quot;8dip&quot;</span><span class="s2"> 
+            </span><span class="s1">android:layout_marginRight=</span><span class="s3">&quot;8dip&quot;</span><span class="s2"> 
+            </span><span class="s1">android:orientation=</span><span class="s3">&quot;horizontal&quot;</span><span class="s2"> 
+            </span><span class="s1">android:layoutDirection=</span><span class="s3">&quot;locale&quot;</span><span class="s2">&gt;</span><span class="s4"> 
+ 
+        </span><span class="s2">&lt;</span><span class="s6">android.support.v7.internal.widget.TintImageView</span><span class="s2"> 
+                </span><span class="s1">android:id=</span><span class="s3">&quot;@+id/search_mag_icon&quot;</span><span class="s2"> 
+                </span><span class="s1">android:layout_width=</span><span class="s3">&quot;@dimen/abc_dropdownitem_icon_width&quot;</span><span class="s2"> 
+                </span><span class="s1">android:layout_height=</span><span class="s3">&quot;wrap_content&quot;</span><span class="s2"> 
+                </span><span class="s1">android:scaleType=</span><span class="s3">&quot;centerInside&quot;</span><span class="s2"> 
+                </span><span class="s1">android:layout_gravity=</span><span class="s3">&quot;center_vertical&quot;</span><span class="s2"> 
+                </span><span class="s1">android:visibility=</span><span class="s3">&quot;gone&quot;</span><span class="s2"> 
+                </span><span class="s1">style=</span><span class="s3">&quot;@style/RtlOverlay.Widget.AppCompat.SearchView.MagIcon&quot; </span><span class="s2">/&gt;</span><span class="s4"> 
+ 
+        </span><span class="s5">&lt;!-- Inner layout contains the app icon, button(s) and EditText --&gt;</span><span class="s4"> 
+        </span><span class="s2">&lt;</span><span class="s6">LinearLayout</span><span class="s2"> 
+                </span><span class="s1">android:id=</span><span class="s3">&quot;@+id/search_plate&quot;</span><span class="s2"> 
+                </span><span class="s1">android:layout_width=</span><span class="s3">&quot;wrap_content&quot;</span><span class="s2"> 
+                </span><span class="s1">android:layout_height=</span><span class="s3">&quot;wrap_content&quot;</span><span class="s2"> 
+                </span><span class="s1">android:layout_weight=</span><span class="s3">&quot;1&quot;</span><span class="s2"> 
+                </span><span class="s1">android:layout_gravity=</span><span class="s3">&quot;center_vertical&quot;</span><span class="s2"> 
+                </span><span class="s1">android:orientation=</span><span class="s3">&quot;horizontal&quot;</span><span class="s2">&gt;</span><span class="s4"> 
+ 
+            </span><span class="s2">&lt;</span><span class="s6">view </span><span class="s1">class=</span><span class="s3">&quot;android.support.v7.widget.SearchView$SearchAutoComplete&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:id=</span><span class="s3">&quot;@+id/search_src_text&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:layout_height=</span><span class="s3">&quot;36dip&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:layout_width=</span><span class="s3">&quot;0dp&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:layout_weight=</span><span class="s3">&quot;1&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:minWidth=</span><span class="s3">&quot;@dimen/abc_search_view_text_min_width&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:layout_gravity=</span><span class="s3">&quot;bottom&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:paddingLeft=</span><span class="s3">&quot;@dimen/abc_dropdownitem_text_padding_left&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:paddingRight=</span><span class="s3">&quot;@dimen/abc_dropdownitem_text_padding_right&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:singleLine=</span><span class="s3">&quot;true&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:ellipsize=</span><span class="s3">&quot;end&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:background=</span><span class="s3">&quot;@null&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:inputType=</span><span class="s3">&quot;text|textAutoComplete|textNoSuggestions&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:imeOptions=</span><span class="s3">&quot;actionSearch&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:dropDownHeight=</span><span class="s3">&quot;wrap_content&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:dropDownAnchor=</span><span class="s3">&quot;@id/search_edit_frame&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:dropDownVerticalOffset=</span><span class="s3">&quot;0dip&quot;</span><span class="s2"> 
+                  </span><span class="s1">android:dropDownHorizontalOffset=</span><span class="s3">&quot;0dip&quot; </span><span class="s2">/&gt;</span><span class="s4"> 
+ 
+            </span><span class="s2">&lt;</span><span class="s6">android.support.v7.internal.widget.TintImageView</span><span class="s2"> 
+                    </span><span class="s1">android:id=</span><span class="s3">&quot;@+id/search_close_btn&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:layout_width=</span><span class="s3">&quot;wrap_content&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:layout_height=</span><span class="s3">&quot;match_parent&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:paddingLeft=</span><span class="s3">&quot;8dip&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:paddingRight=</span><span class="s3">&quot;8dip&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:layout_gravity=</span><span class="s3">&quot;center_vertical&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:background=</span><span class="s3">&quot;?attr/selectableItemBackgroundBorderless&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:focusable=</span><span class="s3">&quot;true&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:contentDescription=</span><span class="s3">&quot;@string/abc_searchview_description_clear&quot; </span><span class="s2">/&gt;</span><span class="s4"> 
+ 
+        </span><span class="s2">&lt;/</span><span class="s6">LinearLayout</span><span class="s2">&gt;</span><span class="s4"> 
+ 
+        </span><span class="s2">&lt;</span><span class="s6">LinearLayout</span><span class="s2"> 
+                </span><span class="s1">android:id=</span><span class="s3">&quot;@+id/submit_area&quot;</span><span class="s2"> 
+                </span><span class="s1">android:orientation=</span><span class="s3">&quot;horizontal&quot;</span><span class="s2"> 
+                </span><span class="s1">android:layout_width=</span><span class="s3">&quot;wrap_content&quot;</span><span class="s2"> 
+                </span><span class="s1">android:layout_height=</span><span class="s3">&quot;match_parent&quot;</span><span class="s2">&gt;</span><span class="s4"> 
+ 
+            </span><span class="s2">&lt;</span><span class="s6">android.support.v7.internal.widget.TintImageView</span><span class="s2"> 
+                    </span><span class="s1">android:id=</span><span class="s3">&quot;@+id/search_go_btn&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:layout_width=</span><span class="s3">&quot;wrap_content&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:layout_height=</span><span class="s3">&quot;match_parent&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:layout_gravity=</span><span class="s3">&quot;center_vertical&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:paddingLeft=</span><span class="s3">&quot;16dip&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:paddingRight=</span><span class="s3">&quot;16dip&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:background=</span><span class="s3">&quot;?attr/selectableItemBackgroundBorderless&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:visibility=</span><span class="s3">&quot;gone&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:focusable=</span><span class="s3">&quot;true&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:contentDescription=</span><span class="s3">&quot;@string/abc_searchview_description_submit&quot; </span><span class="s2">/&gt;</span><span class="s4"> 
+ 
+            </span><span class="s2">&lt;</span><span class="s6">android.support.v7.internal.widget.TintImageView</span><span class="s2"> 
+                    </span><span class="s1">android:id=</span><span class="s3">&quot;@+id/search_voice_btn&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:layout_width=</span><span class="s3">&quot;wrap_content&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:layout_height=</span><span class="s3">&quot;match_parent&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:layout_gravity=</span><span class="s3">&quot;center_vertical&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:paddingLeft=</span><span class="s3">&quot;16dip&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:paddingRight=</span><span class="s3">&quot;16dip&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:background=</span><span class="s3">&quot;?attr/selectableItemBackgroundBorderless&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:visibility=</span><span class="s3">&quot;gone&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:focusable=</span><span class="s3">&quot;true&quot;</span><span class="s2"> 
+                    </span><span class="s1">android:contentDescription=</span><span class="s3">&quot;@string/abc_searchview_description_voice&quot; </span><span class="s2">/&gt;</span><span class="s4"> 
+        </span><span class="s2">&lt;/</span><span class="s6">LinearLayout</span><span class="s2">&gt;</span><span class="s4"> 
+    </span><span class="s2">&lt;/</span><span class="s6">LinearLayout</span><span class="s2">&gt;</span><span class="s4"> 
+</span><span class="s2">&lt;/</span><span class="s6">LinearLayout</span><span class="s2">&gt;</span><span class="s4"> 
+</span><span class="s5">&lt;!-- From: file:/usr/local/google/buildbot/repo_clients/https___googleplex-android.googlesource.com_a_platform_manifest.git/lmp-mr1-supportlib-release/frameworks/support/v7/appcompat/res/layout/abc_search_view.xml --&gt;</span></pre>
+</body>
+</html>

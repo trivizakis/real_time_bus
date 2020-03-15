@@ -1,0 +1,243 @@
+<html>
+<head>
+<title>DirectionHandler.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+.s4 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+DirectionHandler.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">pack.androidmap; 
+ 
+</span><span class="s0">import </span><span class="s1">android.graphics.Color; 
+</span><span class="s0">import </span><span class="s1">android.os.AsyncTask; 
+</span><span class="s0">import </span><span class="s1">android.util.Log; 
+</span><span class="s0">import </span><span class="s1">android.view.Menu; 
+</span><span class="s0">import </span><span class="s1">android.widget.TextView; 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.GoogleMap; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.LatLng; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.MarkerOptions; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.Polyline; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.PolylineOptions; 
+ 
+</span><span class="s0">import </span><span class="s1">org.json.JSONObject; 
+ 
+</span><span class="s0">import </span><span class="s1">java.io.BufferedReader; 
+</span><span class="s0">import </span><span class="s1">java.io.IOException; 
+</span><span class="s0">import </span><span class="s1">java.io.InputStream; 
+</span><span class="s0">import </span><span class="s1">java.io.InputStreamReader; 
+</span><span class="s0">import </span><span class="s1">java.net.HttpURLConnection; 
+</span><span class="s0">import </span><span class="s1">java.net.URL; 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+</span><span class="s0">import </span><span class="s1">java.util.HashMap; 
+</span><span class="s0">import </span><span class="s1">java.util.List; 
+ 
+</span><span class="s2">/** 
+ * Created by Lefteris on 1/4/2015. 
+ */</span><span class="s1"> 
+ 
+ 
+</span><span class="s0">public class </span><span class="s1">DirectionHandler { 
+ 
+    </span><span class="s0">private static </span><span class="s1">GoogleMap map; 
+    </span><span class="s0">private static </span><span class="s1">TextView tvDistanceDuration; 
+    </span><span class="s0">private static </span><span class="s1">Polyline finalPolyline; 
+ 
+    </span><span class="s0">public </span><span class="s1">DirectionHandler(GoogleMap map,TextView tvDistanceDuration) 
+    { 
+        </span><span class="s0">this</span><span class="s1">.map = map; 
+        </span><span class="s0">this</span><span class="s1">.tvDistanceDuration=tvDistanceDuration; 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">Polyline getFinalPolyline(){ 
+        </span><span class="s0">return </span><span class="s1">finalPolyline; 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">String getDirectionsUrl(LatLng origin,LatLng dest){ 
+ 
+        </span><span class="s2">// Origin of route</span><span class="s1"> 
+        String str_origin = </span><span class="s3">&quot;origin=&quot;</span><span class="s1">+origin.latitude+</span><span class="s3">&quot;,&quot;</span><span class="s1">+origin.longitude; 
+ 
+        </span><span class="s2">// Destination of route</span><span class="s1"> 
+        String str_dest = </span><span class="s3">&quot;destination=&quot;</span><span class="s1">+dest.latitude+</span><span class="s3">&quot;,&quot;</span><span class="s1">+dest.longitude; 
+ 
+        </span><span class="s2">// Sensor enabled</span><span class="s1"> 
+        String sensor = </span><span class="s3">&quot;sensor=false&quot;</span><span class="s1">; 
+ 
+        </span><span class="s2">// Building the parameters to the web service</span><span class="s1"> 
+        String parameters = str_origin+</span><span class="s3">&quot;&amp;&quot;</span><span class="s1">+str_dest+</span><span class="s3">&quot;&amp;&quot;</span><span class="s1">+sensor+</span><span class="s3">&quot;&amp;mode=walking&amp;language=EL&quot;</span><span class="s1">; 
+ 
+        </span><span class="s2">// Output format</span><span class="s1"> 
+        String output = </span><span class="s3">&quot;json&quot;</span><span class="s1">; 
+ 
+        </span><span class="s2">// Building the url to the web service</span><span class="s1"> 
+        String url = </span><span class="s3">&quot;https://maps.googleapis.com/maps/api/directions/&quot;</span><span class="s1">+output+</span><span class="s3">&quot;?&quot;</span><span class="s1">+parameters; 
+ 
+        </span><span class="s0">return </span><span class="s1">url; 
+    } 
+    </span><span class="s2">/** A method to download json data from url */</span><span class="s1"> 
+    </span><span class="s0">public static </span><span class="s1">String downloadUrl(String strUrl) </span><span class="s0">throws </span><span class="s1">IOException { 
+        String data = </span><span class="s3">&quot;&quot;</span><span class="s1">; 
+        InputStream iStream = </span><span class="s0">null</span><span class="s1">; 
+        HttpURLConnection urlConnection = </span><span class="s0">null</span><span class="s1">; 
+        </span><span class="s0">try</span><span class="s1">{ 
+            URL url = </span><span class="s0">new </span><span class="s1">URL(strUrl); 
+ 
+            </span><span class="s2">// Creating an http connection to communicate with url</span><span class="s1"> 
+            urlConnection = (HttpURLConnection) url.openConnection(); 
+ 
+            </span><span class="s2">// Connecting to url</span><span class="s1"> 
+            urlConnection.connect(); 
+ 
+            </span><span class="s2">// Reading data from url</span><span class="s1"> 
+            iStream = urlConnection.getInputStream(); 
+ 
+            BufferedReader br = </span><span class="s0">new </span><span class="s1">BufferedReader(</span><span class="s0">new </span><span class="s1">InputStreamReader(iStream)); 
+ 
+            StringBuffer sb = </span><span class="s0">new </span><span class="s1">StringBuffer(); 
+ 
+            String line = </span><span class="s3">&quot;&quot;</span><span class="s1">; 
+            </span><span class="s0">while</span><span class="s1">( ( line = br.readLine()) != </span><span class="s0">null</span><span class="s1">){ 
+                sb.append(line); 
+            } 
+ 
+            data = sb.toString(); 
+ 
+            br.close(); 
+ 
+        }</span><span class="s0">catch</span><span class="s1">(Exception e){ 
+            Log.d(</span><span class="s3">&quot;Exception while downloading url&quot;</span><span class="s1">, e.toString()); 
+        }</span><span class="s0">finally</span><span class="s1">{ 
+            iStream.close(); 
+            urlConnection.disconnect(); 
+        } 
+        </span><span class="s0">return </span><span class="s1">data; 
+    } 
+ 
+    </span><span class="s2">// Fetches data from url passed</span><span class="s1"> 
+    </span><span class="s0">public static class </span><span class="s1">DownloadTask </span><span class="s0">extends </span><span class="s1">AsyncTask&lt;String, Void, String&gt; { 
+ 
+        </span><span class="s2">// Downloading data in non-ui thread</span><span class="s1"> 
+        @Override 
+        </span><span class="s0">protected </span><span class="s1">String doInBackground(String... url) { 
+ 
+            </span><span class="s2">// For storing data from web service</span><span class="s1"> 
+            String data = </span><span class="s3">&quot;&quot;</span><span class="s1">; 
+ 
+            </span><span class="s0">try</span><span class="s1">{ 
+                </span><span class="s2">// Fetching the data from web service</span><span class="s1"> 
+                data = downloadUrl(url[</span><span class="s4">0</span><span class="s1">]); 
+            }</span><span class="s0">catch</span><span class="s1">(Exception e){ 
+                Log.d(</span><span class="s3">&quot;Background Task&quot;</span><span class="s1">,e.toString()); 
+            } 
+            </span><span class="s0">return </span><span class="s1">data; 
+        } 
+ 
+        </span><span class="s2">// Executes in UI thread, after the execution of</span><span class="s1"> 
+        </span><span class="s2">// doInBackground()</span><span class="s1"> 
+        @Override 
+        </span><span class="s0">protected void </span><span class="s1">onPostExecute(String result) { 
+            </span><span class="s0">super</span><span class="s1">.onPostExecute(result); 
+ 
+            ParserTask parserTask = </span><span class="s0">new </span><span class="s1">ParserTask(); 
+ 
+            </span><span class="s2">// Invokes the thread for parsing the JSON data</span><span class="s1"> 
+            parserTask.execute(result); 
+        } 
+    } 
+ 
+    </span><span class="s2">/** A class to parse the Google Places in JSON format */</span><span class="s1"> 
+    </span><span class="s0">public static class </span><span class="s1">ParserTask </span><span class="s0">extends </span><span class="s1">AsyncTask&lt;String, Integer, List&lt;List&lt;HashMap&lt;String,String&gt;&gt;&gt;&gt;{ 
+ 
+        </span><span class="s2">// Parsing the data in non-ui thread</span><span class="s1"> 
+        @Override 
+        </span><span class="s0">protected </span><span class="s1">List&lt;List&lt;HashMap&lt;String, String&gt;&gt;&gt; doInBackground(String... jsonData) { 
+ 
+            JSONObject jObject; 
+            List&lt;List&lt;HashMap&lt;String, String&gt;&gt;&gt; routes = </span><span class="s0">null</span><span class="s1">; 
+ 
+            </span><span class="s0">try</span><span class="s1">{ 
+                jObject = </span><span class="s0">new </span><span class="s1">JSONObject(jsonData[</span><span class="s4">0</span><span class="s1">]); 
+                DirectionsJSONParser parser = </span><span class="s0">new </span><span class="s1">DirectionsJSONParser(); 
+ 
+                </span><span class="s2">// Starts parsing data</span><span class="s1"> 
+                routes = parser.parse(jObject); 
+            }</span><span class="s0">catch</span><span class="s1">(Exception e){ 
+                e.printStackTrace(); 
+            } 
+            </span><span class="s0">return </span><span class="s1">routes; 
+        } 
+ 
+        </span><span class="s2">// Executes in UI thread, after the parsing process</span><span class="s1"> 
+        @Override 
+        </span><span class="s0">protected void </span><span class="s1">onPostExecute(List&lt;List&lt;HashMap&lt;String, String&gt;&gt;&gt; result) { 
+            ArrayList&lt;LatLng&gt; points = </span><span class="s0">null</span><span class="s1">; 
+            PolylineOptions lineOptions = </span><span class="s0">null</span><span class="s1">; 
+            MarkerOptions markerOptions = </span><span class="s0">new </span><span class="s1">MarkerOptions(); 
+            String distance =</span><span class="s3">&quot;&quot;</span><span class="s1">; 
+            String duration =</span><span class="s3">&quot;&quot;</span><span class="s1">; 
+ 
+            </span><span class="s2">// Traversing through all the routes</span><span class="s1"> 
+            </span><span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s4">0</span><span class="s1">;i&lt;result.size();i++){ 
+                points = </span><span class="s0">new </span><span class="s1">ArrayList&lt;LatLng&gt;(); 
+                lineOptions = </span><span class="s0">new </span><span class="s1">PolylineOptions(); 
+ 
+                </span><span class="s2">// Fetching i-th route</span><span class="s1"> 
+                List&lt;HashMap&lt;String, String&gt;&gt; path = result.get(i); 
+ 
+                </span><span class="s2">// Fetching all the points in i-th route</span><span class="s1"> 
+                </span><span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">j=</span><span class="s4">0</span><span class="s1">;j&lt;path.size();j++){ 
+                    HashMap&lt;String,String&gt; point = path.get(j); 
+</span><span class="s2">//START counts distance and duration</span><span class="s1"> 
+                    </span><span class="s0">if</span><span class="s1">(j==</span><span class="s4">0</span><span class="s1">){    </span><span class="s2">// Get distance from the list</span><span class="s1"> 
+                        distance = (String)point.get(</span><span class="s3">&quot;distance&quot;</span><span class="s1">); 
+                        </span><span class="s0">continue</span><span class="s1">; 
+                    }</span><span class="s0">else if</span><span class="s1">(j==</span><span class="s4">1</span><span class="s1">){ </span><span class="s2">// Get duration from the list</span><span class="s1"> 
+                        duration = (String)point.get(</span><span class="s3">&quot;duration&quot;</span><span class="s1">); 
+                        </span><span class="s0">continue</span><span class="s1">; 
+                    } 
+</span><span class="s2">//END counts distance and duration</span><span class="s1"> 
+                    </span><span class="s0">double </span><span class="s1">lat = Double.parseDouble(point.get(</span><span class="s3">&quot;lat&quot;</span><span class="s1">)); 
+                    </span><span class="s0">double </span><span class="s1">lng = Double.parseDouble(point.get(</span><span class="s3">&quot;lng&quot;</span><span class="s1">)); 
+                    LatLng position = </span><span class="s0">new </span><span class="s1">LatLng(lat, lng); 
+ 
+                    points.add(position); 
+                } 
+ 
+                </span><span class="s2">// Adding all the points in the route to LineOptions</span><span class="s1"> 
+                lineOptions.addAll(points); 
+                lineOptions.width(</span><span class="s4">2</span><span class="s1">); 
+                lineOptions.color(Color.RED); 
+            } 
+            tvDistanceDuration.setText(</span><span class="s3">&quot;Απόσταση: &quot;</span><span class="s1">+distance + </span><span class="s3">&quot;, Διάρκεια: &quot;</span><span class="s1">+duration); 
+            </span><span class="s2">// Drawing polyline in the Google Map for the i-th route</span><span class="s1"> 
+            </span><span class="s0">if</span><span class="s1">(lineOptions!=</span><span class="s0">null</span><span class="s1">) 
+                finalPolyline = map.addPolyline(lineOptions); 
+        } 
+    } 
+</span><span class="s2">/* 
+    @Override 
+    public boolean onCreateOptionsMenu(Menu menu) { 
+        // Inflate the menu; this adds items to the action bar if it is present. 
+        getMenuInflater().inflate(R.menu.main, menu); 
+        return true; 
+    } 
+*/</span><span class="s1"> 
+} 
+ 
+</span></pre>
+</body>
+</html>

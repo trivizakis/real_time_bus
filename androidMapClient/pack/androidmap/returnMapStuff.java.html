@@ -1,0 +1,154 @@
+<html>
+<head>
+<title>returnMapStuff.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+.s4 { color: rgb(0,0,255); }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+returnMapStuff.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">pack.androidmap; 
+ 
+</span><span class="s0">import </span><span class="s1">android.database.Cursor; 
+</span><span class="s0">import </span><span class="s1">android.util.Log; 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.LatLng; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.MarkerOptions; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+ 
+</span><span class="s2">/** 
+ * Created by Lefteris on 7/3/2014. 
+ */</span><span class="s1"> 
+</span><span class="s0">class </span><span class="s1">returnMapStuff { 
+ 
+    ArrayList&lt;MarkerOptions&gt; getStopsList(Cursor data){ 
+        ArrayList&lt;ArrayList&lt;Object&gt;&gt; dataArrays = </span><span class="s0">new </span><span class="s1">ArrayList&lt;ArrayList&lt;Object&gt;&gt;(); 
+        </span><span class="s2">// move the cursors pointer to position zero.</span><span class="s1"> 
+        data.moveToFirst(); 
+        </span><span class="s2">// if there is data after the current cursor position, add it</span><span class="s1"> 
+        </span><span class="s2">// to the ArrayList.</span><span class="s1"> 
+        </span><span class="s0">if </span><span class="s1">(!data.isAfterLast()) 
+        { 
+            </span><span class="s0">do</span><span class="s1"> 
+            { 
+                ArrayList&lt;Object&gt; dataList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;Object&gt;(); 
+ 
+                dataList.add(data.getInt(data.getColumnIndex(</span><span class="s3">&quot;id&quot;</span><span class="s1">))); 
+                dataList.add(data.getString(data.getColumnIndex(</span><span class="s3">&quot;route&quot;</span><span class="s1">))); 
+                dataList.add(data.getString(data.getColumnIndex(</span><span class="s3">&quot;address&quot;</span><span class="s1">))); 
+                dataList.add(data.getDouble(data.getColumnIndex(</span><span class="s3">&quot;lat&quot;</span><span class="s1">))); 
+                dataList.add(data.getDouble(data.getColumnIndex(</span><span class="s3">&quot;lng&quot;</span><span class="s1">))); 
+ 
+                dataArrays.add(dataList); 
+            } 
+            </span><span class="s2">// move the cursor's pointer up one position.</span><span class="s1"> 
+            </span><span class="s0">while </span><span class="s1">(data.moveToNext()); 
+        } 
+</span><span class="s2">/* 
+        ArrayList&lt;Object&gt; alpha = new ArrayList&lt;Object&gt;(); 
+        alpha = dataArrays.get(0); 
+        Log.i(&quot;dataArrays size--&gt;&quot;, &quot;&quot; + dataArrays.size()); 
+        Log.i(&quot;dataArrays first element--&gt;&quot;,alpha.get(2).toString() ); 
+        //}catch(Exception e){e.printStackTrace();} 
+        //GET dataArray FROM SQLite END 
+*/</span><span class="s1"> 
+       </span><span class="s0">return </span><span class="s1">getMarker(dataArrays); 
+    } 
+    </span><span class="s2">//apo DB array se MarkerOptions array</span><span class="s1"> 
+    </span><span class="s0">public </span><span class="s1">ArrayList&lt;MarkerOptions&gt; getMarker (ArrayList&lt;ArrayList&lt;Object&gt;&gt; data) 
+    { 
+        ArrayList&lt;MarkerOptions&gt; markers = </span><span class="s0">new </span><span class="s1">ArrayList&lt;MarkerOptions&gt;(); 
+        ArrayList&lt;Object&gt; alpha = </span><span class="s0">new </span><span class="s1">ArrayList&lt;Object&gt;(); 
+ 
+        </span><span class="s0">for</span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s4">0</span><span class="s1">; i&lt;data.size(); i++) 
+        { 
+            alpha=data.get(i); 
+            </span><span class="s2">//int id = Integer.parseInt(alpha.get(0).toString());</span><span class="s1"> 
+            String route =alpha.get(</span><span class="s4">1</span><span class="s1">).toString(); 
+            String address =alpha.get(</span><span class="s4">2</span><span class="s1">).toString(); 
+            </span><span class="s0">double </span><span class="s1">lat =Double.parseDouble(alpha.get(</span><span class="s4">3</span><span class="s1">).toString()); 
+            </span><span class="s0">double </span><span class="s1">lng =Double.parseDouble(alpha.get(</span><span class="s4">4</span><span class="s1">).toString()); 
+        </span><span class="s2">/*Log.i(&quot;dataArrays ID--&gt;&quot;,&quot;&quot;+id); 
+        Log.i(&quot;dataArrays ROUTE--&gt;&quot;,route); 
+        Log.i(&quot;dataArrays ADDRESS--&gt;&quot;,address); 
+        Log.i(&quot;dataArrays LAT--&gt;&quot;,&quot;&quot;+lat); 
+        Log.i(&quot;dataArrays LNG--&gt;&quot;,&quot;&quot;+lng);*/</span><span class="s1"> 
+            Log.i(</span><span class="s3">&quot;HowManyMarkersDoICreate?--&gt;&quot;</span><span class="s1">,</span><span class="s3">&quot;&quot;</span><span class="s1">+i+</span><span class="s3">&quot;/&quot;</span><span class="s1">+data.size()); 
+            LatLng oneMark = </span><span class="s0">new </span><span class="s1">LatLng(lat, lng);      </span><span class="s2">//create LatLng for MarkerOptions</span><span class="s1"> 
+            markers.add(</span><span class="s0">new </span><span class="s1">MarkerOptions()            </span><span class="s2">//add MarkerOptions to array</span><span class="s1"> 
+                    .title(route) 
+                    .snippet(address) 
+                    .position(oneMark)); 
+        } 
+        </span><span class="s0">return </span><span class="s1">markers; 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">ArrayList&lt;MarkerOptions&gt; getLivebusList (Cursor data) 
+    { 
+        ArrayList&lt;ArrayList&lt;Object&gt;&gt; dataArrays = </span><span class="s0">new </span><span class="s1">ArrayList&lt;ArrayList&lt;Object&gt;&gt;(); 
+        </span><span class="s2">// move the cursors pointer to position zero.</span><span class="s1"> 
+        data.moveToFirst(); 
+        </span><span class="s2">// if there is data after the current cursor position, add it</span><span class="s1"> 
+        </span><span class="s2">// to the ArrayList.</span><span class="s1"> 
+        </span><span class="s0">if </span><span class="s1">(!data.isAfterLast()) 
+        { 
+            </span><span class="s0">do</span><span class="s1"> 
+            { 
+                ArrayList&lt;Object&gt; dataList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;Object&gt;(); 
+ 
+                dataList.add(data.getInt(data.getColumnIndex(</span><span class="s3">&quot;bus_id&quot;</span><span class="s1">))); 
+                dataList.add(data.getString(data.getColumnIndex(</span><span class="s3">&quot;route&quot;</span><span class="s1">))); 
+                dataList.add(data.getString(data.getColumnIndex(</span><span class="s3">&quot;bus_name&quot;</span><span class="s1">))); 
+                dataList.add(data.getDouble(data.getColumnIndex(</span><span class="s3">&quot;livebusLat&quot;</span><span class="s1">))); 
+                dataList.add(data.getDouble(data.getColumnIndex(</span><span class="s3">&quot;livebusLng&quot;</span><span class="s1">))); 
+ 
+                dataArrays.add(dataList); 
+            } 
+            </span><span class="s2">// move the cursor's pointer up one position.</span><span class="s1"> 
+            </span><span class="s0">while </span><span class="s1">(data.moveToNext()); 
+        } 
+</span><span class="s2">/* 
+        ArrayList&lt;Object&gt; alpha = new ArrayList&lt;Object&gt;(); 
+        alpha = dataArrays.get(0); 
+        Log.i(&quot;dataArrays size--&gt;&quot;, &quot;&quot; + dataArrays.size()); 
+        Log.i(&quot;dataArrays first element--&gt;&quot;,alpha.get(2).toString() ); 
+        //}catch(Exception e){e.printStackTrace();} 
+        //GET dataArray FROM SQLite END 
+*/</span><span class="s1"> 
+        </span><span class="s0">return </span><span class="s1">getMarker(dataArrays); 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">ArrayList&lt;String&gt; getRoutesArray(Cursor data) { 
+        ArrayList&lt;String&gt; routesArray = </span><span class="s0">new </span><span class="s1">ArrayList&lt;String&gt;(); 
+ 
+        data.moveToFirst(); 
+        </span><span class="s2">// if there is data after the current cursor position, add it</span><span class="s1"> 
+        </span><span class="s2">// to the ArrayList.</span><span class="s1"> 
+        </span><span class="s0">if </span><span class="s1">(!data.isAfterLast()) 
+        { 
+            </span><span class="s0">do</span><span class="s1"> 
+            { 
+                routesArray.add(data.getString(data.getColumnIndex(</span><span class="s3">&quot;route&quot;</span><span class="s1">))); 
+            } 
+            </span><span class="s2">// move the cursor's pointer up one position.</span><span class="s1"> 
+            </span><span class="s0">while </span><span class="s1">(data.moveToNext()); 
+        } 
+ 
+        </span><span class="s0">return </span><span class="s1">routesArray; 
+    } 
+}</span></pre>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<html>
+<head>
+<title>AsyncClearMap.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+AsyncClearMap.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">pack.androidmap; 
+ 
+</span><span class="s0">import </span><span class="s1">android.app.Activity; 
+</span><span class="s0">import </span><span class="s1">android.app.ProgressDialog; 
+</span><span class="s0">import </span><span class="s1">android.content.Context; 
+</span><span class="s0">import </span><span class="s1">android.os.AsyncTask; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.util.Log; 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.GoogleMap; 
+ 
+</span><span class="s2">/** 
+ * Created by Lefteris on 22/12/2014. 
+ */</span><span class="s1"> 
+ 
+</span><span class="s0">public class </span><span class="s1">AsyncClearMap  </span><span class="s0">extends </span><span class="s1">Activity { 
+ 
+    </span><span class="s0">public </span><span class="s1">Context context; 
+    </span><span class="s0">private </span><span class="s1">String route; 
+    </span><span class="s0">public </span><span class="s1">ProgressDialog progressDialog; 
+    </span><span class="s0">private </span><span class="s1">GoogleMap map; 
+ 
+    </span><span class="s0">public void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        setContentView(R.layout.map_activity); 
+        progressDialog = </span><span class="s0">new </span><span class="s1">ProgressDialog(context); 
+    } 
+    </span><span class="s0">public void </span><span class="s1">execute(String route) { 
+        </span><span class="s0">this</span><span class="s1">.route=route; 
+        </span><span class="s0">new </span><span class="s1">AsyncSendJ().execute(); 
+    } 
+    </span><span class="s0">public </span><span class="s1">AsyncClearMap(Context context, GoogleMap map){ 
+        </span><span class="s0">this</span><span class="s1">.context = context; 
+        </span><span class="s0">this</span><span class="s1">.map =map; 
+    } 
+ 
+    </span><span class="s0">private class </span><span class="s1">AsyncSendJ </span><span class="s0">extends </span><span class="s1">AsyncTask&lt;Void, Void, String&gt; { 
+ 
+        @Override 
+        </span><span class="s0">protected </span><span class="s1">String doInBackground(Void... params) { 
+ 
+            </span><span class="s0">return </span><span class="s3">&quot;destroy that world!!&quot;</span><span class="s1">; 
+        } 
+ 
+        @Override 
+        </span><span class="s0">protected void </span><span class="s1">onPostExecute(String result){ 
+            map.clear(); 
+            Log.i(</span><span class="s3">&quot;&lt;---------------------------------OnPostExecute LiveBus!--&gt;&quot;</span><span class="s1">, result); 
+        } 
+ 
+ 
+        @Override 
+        </span><span class="s0">protected void </span><span class="s1">onProgressUpdate(Void... values) { 
+            Log.d(</span><span class="s3">&quot;ProgressUpdate LiveBus&quot;</span><span class="s1">, </span><span class="s3">&quot;You are in progress update ... &quot; </span><span class="s1">); 
+        } 
+ 
+        @Override 
+        </span><span class="s0">protected void </span><span class="s1">onPreExecute() { 
+            Log.d(</span><span class="s3">&quot;PreExecute&quot;</span><span class="s1">,</span><span class="s3">&quot;Initializing LiveBus......&quot;</span><span class="s1">); 
+        } 
+ 
+    } 
+} 
+</span></pre>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<html>
+<head>
+<title>SettingsPane.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+SettingsPane.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">pack.androidmap; 
+ 
+</span><span class="s0">import </span><span class="s1">android.app.Fragment; 
+</span><span class="s0">import </span><span class="s1">android.content.Context; 
+</span><span class="s0">import </span><span class="s1">android.content.SharedPreferences; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.view.LayoutInflater; 
+</span><span class="s0">import </span><span class="s1">android.view.View; 
+</span><span class="s0">import </span><span class="s1">android.view.ViewGroup; 
+</span><span class="s0">import </span><span class="s1">android.widget.Button; 
+</span><span class="s0">import </span><span class="s1">android.widget.TextView; 
+ 
+</span><span class="s2">/** 
+ * Created by Lefteris on 4/4/2015. 
+ */</span><span class="s1"> 
+</span><span class="s0">public class </span><span class="s1">SettingsPane </span><span class="s0">extends </span><span class="s1">Fragment { 
+ 
+    </span><span class="s0">private </span><span class="s1">Context context; 
+ 
+    </span><span class="s0">public </span><span class="s1">SettingsPane(Context context) 
+    { 
+        </span><span class="s0">this</span><span class="s1">.context = context; 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">View onCreateView(LayoutInflater inflater, ViewGroup container, 
+                             Bundle savedInstanceState) 
+    { 
+        View settingsPane = inflater.inflate(R.layout.settings_pane,container,</span><span class="s0">false</span><span class="s1">); 
+        </span><span class="s0">final </span><span class="s1">TextView tvServerAddr = (TextView) settingsPane.findViewById(R.id.settingIpTB); 
+ 
+ 
+        SharedPreferences spSetting = context.getSharedPreferences(</span><span class="s3">&quot;settings&quot;</span><span class="s1">,context.MODE_PRIVATE); 
+        </span><span class="s0">final </span><span class="s1">SharedPreferences.Editor editor = spSetting.edit(); 
+        tvServerAddr.setText(spSetting.getString(</span><span class="s3">&quot;webServerName&quot;</span><span class="s1">,</span><span class="s0">null</span><span class="s1">)); 
+        Button saveBtn=(Button) settingsPane.findViewById(R.id.btnSave); 
+        saveBtn.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+            @Override 
+            </span><span class="s0">public void </span><span class="s1">onClick(View v) { 
+ 
+                editor.putString(</span><span class="s3">&quot;webServerName&quot;</span><span class="s1">,tvServerAddr.getText().toString()); 
+                editor.apply(); 
+ 
+            } 
+        }); 
+ 
+        </span><span class="s0">return </span><span class="s1">settingsPane; 
+    } 
+} 
+</span></pre>
+</body>
+</html>

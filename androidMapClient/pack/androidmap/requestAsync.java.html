@@ -1,0 +1,170 @@
+<html>
+<head>
+<title>requestAsync.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(0,0,128); font-weight: bold; }
+.s1 { }
+.s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(0,128,0); font-weight: bold; }
+</style>
+</head>
+<BODY BGCOLOR="#ffffff">
+<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >
+<TR><TD><CENTER>
+<FONT FACE="Arial, Helvetica" COLOR="#000000">
+requestAsync.java</FONT>
+</center></TD></TR></TABLE>
+<pre>
+
+<span class="s0">package </span><span class="s1">pack.androidmap; 
+ 
+</span><span class="s2">/** 
+ * Created by Lefteris on 3/3/2014. 
+ */</span><span class="s1"> 
+ 
+</span><span class="s0">import </span><span class="s1">android.app.Activity; 
+</span><span class="s0">import </span><span class="s1">android.app.Dialog; 
+</span><span class="s0">import </span><span class="s1">android.app.ProgressDialog; 
+</span><span class="s0">import </span><span class="s1">android.content.Context; 
+</span><span class="s0">import </span><span class="s1">android.database.Cursor; 
+</span><span class="s0">import </span><span class="s1">android.database.sqlite.SQLiteDatabase; 
+</span><span class="s0">import </span><span class="s1">android.os.AsyncTask; 
+</span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+</span><span class="s0">import </span><span class="s1">android.os.Handler; 
+</span><span class="s0">import </span><span class="s1">android.util.Log; 
+ 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.GoogleMap; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.BitmapDescriptorFactory; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.MarkerOptions; 
+</span><span class="s0">import </span><span class="s1">com.google.android.gms.maps.model.PolylineOptions; 
+ 
+</span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+</span><span class="s0">import </span><span class="s1">java.util.Locale; 
+ 
+</span><span class="s0">public class </span><span class="s1">requestAsync  </span><span class="s0">extends </span><span class="s1">Activity{ 
+    </span><span class="s0">public </span><span class="s1">Context context; 
+    </span><span class="s0">private </span><span class="s1">DbAndroidMap db; 
+    </span><span class="s0">public </span><span class="s1">String serverIp; 
+    String table= </span><span class="s3">&quot;stops&quot;</span><span class="s1">; 
+    String tableRoute = </span><span class="s3">&quot;routes&quot;</span><span class="s1">; 
+ 
+    </span><span class="s0">public void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
+        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+        setContentView(R.layout.map_activity); 
+    } 
+    </span><span class="s0">public void </span><span class="s1">execute() { 
+        </span><span class="s0">new </span><span class="s1">AsyncSendJ().execute(); 
+    } 
+ 
+    </span><span class="s0">public </span><span class="s1">requestAsync(Context context,String serverIp){ 
+        </span><span class="s0">this</span><span class="s1">.serverIp=serverIp; 
+        </span><span class="s0">this</span><span class="s1">.context = context; 
+    } 
+ 
+ 
+    </span><span class="s0">private class </span><span class="s1">AsyncSendJ </span><span class="s0">extends  </span><span class="s1">AsyncTask&lt;Void, Void, String&gt;{ 
+ 
+       </span><span class="s2">// private static final String TAG = &quot;YEAH&quot;;</span><span class="s1"> 
+       </span><span class="s0">private final </span><span class="s1">String stopsURL = </span><span class="s3">&quot;http://&quot;</span><span class="s1">+serverIp+</span><span class="s3">&quot;:8080/livebus/stops.php&quot;</span><span class="s1">; 
+       </span><span class="s0">private final </span><span class="s1">String routesURL = </span><span class="s3">&quot;http://&quot;</span><span class="s1">+serverIp+</span><span class="s3">&quot;:8080/livebus/routes.php&quot;</span><span class="s1">; 
+       </span><span class="s0">private static final </span><span class="s1">String username = </span><span class="s3">&quot;lefteris&quot;</span><span class="s1">; 
+       </span><span class="s0">private static final </span><span class="s1">String password = </span><span class="s3">&quot;thesis&quot;</span><span class="s1">; 
+       </span><span class="s2">// private static final String URL = &quot;http://192.168.56.101:8080/livebus/receiveJson.php&quot;;</span><span class="s1"> 
+       </span><span class="s2">//private static final String URL = &quot;http://79.107.7.219:8080/livebus/receiveJson.php&quot;;</span><span class="s1"> 
+ 
+ 
+        @Override 
+        </span><span class="s0">protected </span><span class="s1">String doInBackground(Void... params) { 
+            </span><span class="s0">new </span><span class="s1">SimpleHTTPPOSTRequester(username, password, routesURL, </span><span class="s3">&quot;routes&quot;</span><span class="s1">).makeHTTPPOSTRequest(context); 
+            </span><span class="s0">new </span><span class="s1">SimpleHTTPPOSTRequester(username, password, stopsURL, </span><span class="s3">&quot;stops&quot;</span><span class="s1">).makeHTTPPOSTRequest(context); 
+ 
+            </span><span class="s0">return </span><span class="s3">&quot;Completed!&quot;</span><span class="s1">; 
+        } 
+ 
+        @Override 
+        </span><span class="s0">protected void </span><span class="s1">onPostExecute(String result){ 
+            </span><span class="s2">//Log.i(&quot;POSA Async routes&quot;, result);</span><span class="s1"> 
+            </span><span class="s2">//handler.post(placeMapStuff);</span><span class="s1"> 
+        } 
+ 
+ 
+        @Override 
+        </span><span class="s0">protected void </span><span class="s1">onProgressUpdate(Void... values) { 
+            </span><span class="s2">//Log.d(&quot;ProgressUpdate&quot;, &quot;You are in progress update ... &quot; );</span><span class="s1"> 
+        } 
+ 
+        @Override 
+        </span><span class="s0">protected void </span><span class="s1">onPreExecute() { 
+            </span><span class="s0">try</span><span class="s1">{ 
+                db = </span><span class="s0">new </span><span class="s1">DbAndroidMap(context); 
+                DatabaseManager lol =</span><span class="s0">new </span><span class="s1">DatabaseManager(); 
+                lol.initializeInstance(db); 
+                SQLiteDatabase database = DatabaseManager.getInstance().openDatabase(); 
+                database.setLocale(Locale.getDefault()); 
+                DatabaseManager.getInstance().deletedb(table); 
+                DatabaseManager.getInstance().deletedb(tableRoute); 
+                DatabaseManager.getInstance().closeDatabase();      </span><span class="s2">//klinei tin sindesi me tin db</span><span class="s1"> 
+            }</span><span class="s0">catch</span><span class="s1">(Exception e){e.printStackTrace();} 
+        } 
+    } 
+} 
+</span><span class="s2">/* 
+    Runnable placeMapStuff = new Runnable() { 
+        @Override 
+        public void run() { 
+ 
+//DBmanager gia prosvasi stin DB (pou ixe dimiourgi8ei stin requestAsync) 
+//String route = &quot;partali&quot;; 
+ 
+            SQLiteDatabase database = DatabaseManager.getInstance().openDatabase(); 
+            database.setLocale(Locale.getDefault()); 
+ 
+            String query=&quot;SELECT * FROM &quot;+table+&quot; ORDER BY lng asc&quot;;//+&quot; WHERE route=\&quot;&quot;+route+&quot;\&quot;&quot;;        //query apo db gia (stops) 
+            String queryRoutes=&quot;SELECT * FROM &quot;+tableRoute;                                                 //query apo db gia (routes) 
+ 
+            Cursor data = database.rawQuery(query, null);                                          //klisi query gia stops 
+            Cursor dataRoutes = database.rawQuery(queryRoutes, null);                            //klisi queryRoutes 
+ 
+ 
+            final ArrayList&lt;MarkerOptions&gt; markers = new returnMapStuff().getStopsList(data); 
+            ArrayList&lt;String&gt; routesStrings = new returnMapStuff().getRoutesArray(dataRoutes); 
+//End data from db 
+ 
+            DatabaseManager.getInstance().deletedb(table); 
+            DatabaseManager.getInstance().deletedb(tableRoute); 
+            DatabaseManager.getInstance().closeDatabase();      //klinei tin sindesi me tin db 
+            //database.delete(&quot;stops&quot;,null,null); 
+ 
+test arrays data... ;) 
+        for(int i=0; i&lt;routesStrings.size(); i++) 
+        { 
+            Log.i(&quot;routeArray--&gt;&quot;,&quot;&quot;+routesStrings.get(i)); 
+            Log.i(&quot;routeNameMarker--&gt;&quot;, &quot;&quot; + markers.get(i).getTitle()); 
+        } 
+//test end 
+ 
+//Add marker from db 
+            //custom marker??? 
+            //BitmapDescriptor busStopIcon = BitmapDescriptorFactory.fromPath(&quot;icons/bus&quot;);                                                 //custom marker 
+            //for(int i=0; i&lt;markers.size(); i++){(markers.get(i)).icon(busStopIcon);} 
+            //for(int i=0; i&lt;markers.size(); i++){(markers.get(i)).icon(BitmapDescriptorFactory.fromPath(&quot;icons/star.png&quot;));} 
+            for (MarkerOptions marker1 : markers) {marker1.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));};   //custom marker 
+            for (MarkerOptions marker : markers) {map.addMarker(marker);}                                      //vazei markers ston xarti (stops) 
+// ADD marker END 
+ 
+//PolyLines ADD 
+            ArrayList&lt;PolylineOptions&gt; polylines = new returnPolylines().getStopsPoly(markers,routesStrings); 
+            for (PolylineOptions polyline : polylines) { 
+                map.addPolyline(polyline); 
+                Log.i(&quot;HowManyPolylinesExist?????????--&gt;&quot;, &quot;&quot;+polylines.size()); 
+            } 
+//PolyLines ADD 
+            markers.clear(); 
+            polylines.clear(); 
+        } 
+    }; 
+*/</span></pre>
+</body>
+</html>
