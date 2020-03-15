@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document><name>λιμάνι</name>
+<description>Content</description>
+<Style id="markerstyle">
+<IconStyle><Icon><href>
+http://maps.google.com/intl/en_us/mapfiles/ms/micons/red-dot.png
+</href></Icon></IconStyle>
+</Style>
+<Placemark><name>λιμάνι</name>
+<description></description>
+<styleUrl>#markerstyle</styleUrl>
+<Point>
+<coordinates>25.142378,35.341774,0.0</coordinates>
+</Point>
+</Placemark>
+</Document>
+</kml>
